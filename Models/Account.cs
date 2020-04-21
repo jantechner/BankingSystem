@@ -1,40 +1,50 @@
 using System;
+using System.Collections;
 
 namespace Models
 {
     public class Account
     {
-        private readonly Customer owner;
-        private readonly string number;
-        private double balance = 0;
-        //private readonly DateTime openingDate = DateTime.Today;
-        //TODO currency
-        //private readonly Currency currency = Currency.PLN;
+        private readonly Customer _owner;
+        private readonly DateTime _openingDate = DateTime.Now;
+        private readonly Currency _currency;
+        private double _balance;
+        private readonly string _number; // a to do czego jest?
+        // private List<Deposit> deposits = 
+        private IList _loans = new LoansStore();
 
-        public Account(Customer _owner, string _number)
+        public Account(Customer customer, string number, Currency currency = Currency.PL)
         {
-            owner = _owner;
-            number = _number;
+            _owner = customer;
+            _currency = currency;
+            _number = number;
         }
-        public void takeMoney(double amount)
+
+        public void WithdrawMoney(double amount)
         {
-            if (balance < amount)
+            if (_balance < amount)
                 throw new SystemException("Not enough funds");
 
-            balance -= amount;
+            _balance -= amount;
         }
-        public void giveMoney(double amount)
+
+        public void BankMoney(double amount)
         {
-            balance += amount;
+            _balance += amount;
         }
-        public void getBalance()
+
+        public double GetBalance()
         {
-            Console.WriteLine(balance.ToString());
+            return _balance;
         }
 
         public override string ToString()
         {
-            return $"Owner: {owner}\nNumber: {number}";
+            return $"Owner: {_owner}\n" +
+                   $"Number: {_number}\n" +
+                   $"Opening date: {_openingDate}\n" +
+                   $"Currency: {_currency}\n" +
+                   $"Balance: {_balance}";
         }
     }
 }

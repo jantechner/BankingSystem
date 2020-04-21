@@ -5,7 +5,7 @@ namespace Models
 {
     public class AccountsStore : DictionaryBase
     {
-
+        
     }
 
 }
