@@ -3,48 +3,44 @@ using System.Collections;
 
 namespace Models
 {
-    public class Account
+    public abstract class Account
     {
-        private readonly Customer _owner;
-        private readonly DateTime _openingDate = DateTime.Now;
-        private readonly Currency _currency;
-        private double _balance;
-        private readonly string _number; // a to do czego jest?
-        // private List<Deposit> deposits = 
-        private IList _loans = new LoansStore();
+        protected readonly int id;
+        protected readonly Customer owner;
+        public DateTime OpeningDate { get; } = DateTime.Now;
+        public Currency Currency { get; }
+        public double Balance { get; protected set; }
 
-        public Account(Customer customer, string number, Currency currency = Currency.PL)
+        public string Number { get; } // po co to?
+
+        // private IList Deposits = new DepositsStore();    // nie jestem pewien jak to ma wyglądać
+        public IList Loans { get; } = new LoansStore();
+        public InterestRate InterestRate { get; }
+        public IList History { get; private set; } = new OperationsHistory();
+
+        public Account(int _id, Customer customer, string number, InterestRate interestRate,
+            Currency currency = Currency.PL)
         {
-            _owner = customer;
-            _currency = currency;
-            _number = number;
+            id = _id;
+            owner = customer;
+            Currency = currency;
+            Number = number;
+            InterestRate = interestRate;
         }
 
-        public void WithdrawMoney(double amount)
-        {
-            if (_balance < amount)
-                throw new SystemException("Not enough funds");
+        abstract public void WithdrawMoney(double amount);
 
-            _balance -= amount;
-        }
-
-        public void BankMoney(double amount)
-        {
-            _balance += amount;
-        }
-
-        public double GetBalance()
-        {
-            return _balance;
-        }
+        abstract public void DepositMoney(double amount);
 
         public override string ToString()
         {
-            return $"Owner: {_owner}\n" +
-                   $"Number: {_number}\n" +
-                   $"Opening date: {_openingDate}\n" +
-                   $"Currency: {_currency}\n" +
-                   $"Balance: {_balance}";
+            return $"ID: {id}\n" +
+                   $"Owner: {owner}\n" +
+                   $"Number: {Number}\n" +
+                   $"Opening date: {OpeningDate}\n" +
+                   $"Currency: {Currency}\n" +
+                   $"Balance: {Balance}\n" +
+                   $"InterestRate: {InterestRate}";
         }
     }
 }

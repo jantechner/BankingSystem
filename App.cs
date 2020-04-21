@@ -9,20 +9,20 @@ namespace BankingSystem
         {
             var globalBank = new Bank();
 
-            var c1 = new Customer("87040500342") { Name = "Jan", Surname = "Kowalski" };
-            c1.openAccount(globalBank);
-            var account = c1.getAccounts()[0];
-            account.bank.depositMoney(account.accountId, 100);
-            c1.showBalance(account.bank, account.accountId);
-
-            var c2 = new Customer("17040500342") { Name = "Tomasz", Surname = "Nowak" };
-            c2.openAccount(globalBank);
-            var account2 = c2.getAccounts()[0];
-
-            c1.innerBankTransfer(globalBank, account.accountId, account2.accountId, 50);
-            c2.showBalance(account2.bank, account2.accountId);
-
-            Console.ReadKey();
+            var customer1 = new Customer("87040500342") { Name = "Jan", Surname = "Kowalski" };
+            var customer2 = new Customer("97021500531") { Name = "Grzegorz", Surname = "Nowak" };
+            customer1.Open<DebitAccount>(globalBank);
+            customer2.Open<Account>(globalBank);
+            var account1 = customer1.GetAccounts()[0];
+            var account2 = customer2.GetAccounts()[0];
+            
+            account1.DepositMoney(1000);
+            account1.WithdrawMoney(500);
+            account1.WithdrawMoney(600);
+            account1.DepositMoney(500);
+            
+            Console.WriteLine(account1);
+            Console.WriteLine(account2);
         }
     }
 }
