@@ -15,7 +15,7 @@ namespace Models
 
         public override string ToString()
         {
-            return "Operation - {Description} ({Date})";
+            return $"Operation - {Description} ({Date})";
         }
     }
 }

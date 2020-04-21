@@ -34,6 +34,11 @@ namespace Models
             return accounts;
         }
 
+        public bool RequestLoan(int amount, Bank bank)
+        {
+            return Banks.Contains(bank) && bank.RaiseLoan(this, amount);
+        }
+
         // public void innerBankTransfer(Bank bank, string from, string to, double amount)
         // {
         //     if (!accounts.TryGetValue((bank, from), out string password))

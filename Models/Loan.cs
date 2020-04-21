@@ -4,6 +4,8 @@ namespace Models
     {
         public double RemainingAmount { get; private set; }
         public InterestRate InterestRate { get; }
+        
+        //TODO obliczanie rzeczywistej wysokości pożyczki uwzględniając stopy procentowe
 
         public Loan(double remainingAmount, InterestRate interestRate)
         {
@@ -11,9 +13,14 @@ namespace Models
             InterestRate = interestRate;
         }
 
-        public void UpdateLoanAmount(double amount)
+        public void RepayLoan(double amount)
         {
             RemainingAmount -= amount;
+        }
+
+        public override string ToString()
+        {
+            return $"Loan: {RemainingAmount}, InterestRate: {InterestRate}\n";
         }
     }
 }

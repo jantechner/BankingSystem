@@ -4,15 +4,15 @@ namespace Models
 {
     public class DebitAccount : Account
     {
-        public DebitAccount(int id, Customer customer, string number, InterestRate interestRate,
+        public DebitAccount(Bank bank, int id, Customer customer, string number, InterestRate interestRate,
             Currency currency = Currency.PL)
-            : base(id, customer, number, interestRate, currency)
+            : base(bank, id, customer, number, interestRate, currency)
         {
         }
 
         public double Debit { get; private set; }
 
-        override public void WithdrawMoney(double amount)
+        public override void DecreaseBalance(double amount)
         {
             Balance -= amount;
             if (Balance >= 0) return;
@@ -20,7 +20,7 @@ namespace Models
             Balance = 0;
         }
 
-        override public void DepositMoney(double amount)
+        public override void IncreaseBalance(double amount)
         {
             Debit -= amount;
             if (Debit >= 0) return;
@@ -31,14 +31,7 @@ namespace Models
 
         public override string ToString()
         {
-            return $"ID: {id}\n" +
-                   $"Owner: {owner}\n" +
-                   $"Number: {Number}\n" +
-                   $"Opening date: {OpeningDate}\n" +
-                   $"Currency: {Currency}\n" +
-                   $"Balance: {Balance}\n" +
-                   $"Debit: {Debit}\n" +
-                   $"InterestRate: {InterestRate}";
+            return base.ToString() + $"Debit: {Debit}\n";
         }
     }
 }

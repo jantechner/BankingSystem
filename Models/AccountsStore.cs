@@ -37,7 +37,7 @@ namespace Models
 
         public void CopyTo(KeyValuePair<Customer, Account>[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            ((ICollection)_accounts).CopyTo(array, arrayIndex);
         }
 
         public bool Remove(KeyValuePair<Customer, Account> item)
@@ -45,15 +45,9 @@ namespace Models
             return _accounts.Remove(item.Key);
         }
 
-        public int Count
-        {
-            get { return _accounts.Count; }
-        }
+        public int Count => _accounts.Count;
 
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
+        public bool IsReadOnly => false;
 
         public void Add(Customer key, Account value)
         {
@@ -77,18 +71,16 @@ namespace Models
 
         public Account this[Customer key]
         {
-            get { return _accounts[key]; }
-            set { }
+            get
+            {
+                if (_accounts.ContainsKey(key)) return _accounts[key];
+                throw new KeyNotFoundException();
+            }
+            set => _accounts[key] = value;
         }
 
-        public ICollection<Customer> Keys
-        {
-            get { return _accounts.Keys; }
-        }
+        public ICollection<Customer> Keys => _accounts.Keys;
 
-        public ICollection<Account> Values
-        {
-            get { return _accounts.Values; }
-        }
+        public ICollection<Account> Values => _accounts.Values;
     }
 }

@@ -2,6 +2,9 @@ namespace Models
 {
     public enum Currency
     {
-        PL, USD, EUR, GBP
+        PL,
+        USD,
+        EUR,
+        GBP
     }
 }
