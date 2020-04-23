@@ -27,7 +27,7 @@ namespace BankingSystem
             globalBank.Execute(new DecreaseBalance(account1, 600));
             globalBank.Execute(new IncreaseBalance(account1, 400));
 
-            customer1.RequestLoan(10000, globalBank);
+            customer1.RequestLoan(account1, 10000, globalBank);
             account1.Loans[0].RepayLoan(100);
 
             globalBank.Execute(new Transfer(account1, "97021500531", 200));

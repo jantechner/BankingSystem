@@ -45,9 +45,9 @@ namespace Models
             account.Bank.Execute(new IncreaseBalance(account, amount));
         }
 
-        public bool RequestLoan(int amount, Bank bank)
+        public bool RequestLoan(Account account, int amount, Bank bank)
         {
-            return Banks.Contains(bank) && bank.RaiseLoan(this, amount);
+            return Banks.Contains(bank) && bank.Execute(new RaiseLoan(account, amount));
         }
 
         // public void innerBankTransfer(Bank bank, string from, string to, double amount)

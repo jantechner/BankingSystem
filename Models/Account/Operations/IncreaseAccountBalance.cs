@@ -13,7 +13,7 @@ namespace Models
             _account = account;
         }
 
-        public override void Execute()
+        public override bool Execute()
         {
             if (_account is PlainAccount)
             {
@@ -22,10 +22,12 @@ namespace Models
             else if (_account is DebitAccount a)
             {
                 a.Debit -= _amount;
-                if (a.Debit >= 0) return;
+                if (a.Debit >= 0) return true;
                 a.Balance = a.Balance == 0.0 ? Math.Abs(a.Debit) : a.Balance + _amount;
                 a.Debit = 0;
             }
+
+            return true;
         }
     }
 }

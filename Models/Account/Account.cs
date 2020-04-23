@@ -31,11 +31,6 @@ namespace Models
             InterestRate = interestRate;
         }
 
-        public void RaiseLoan(Loan loan)
-        {
-            Loans.Add(loan);
-        }
-
         public override string ToString()
         {
             return $"ID: {_id}\n" +

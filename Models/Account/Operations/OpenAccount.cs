@@ -15,7 +15,7 @@ namespace Models
             _accountType = typeof(T);
         }
 
-        public override void Execute()
+        public override bool Execute()
         {
             Account newAccount;
             if (typeof(T) == typeof(PlainAccount))
@@ -35,6 +35,7 @@ namespace Models
             _bank.AddNewAccount(_customer, newAccount);
 
             Console.WriteLine($"Opening account for {_customer}");
+            return true;
         }
     }
 }

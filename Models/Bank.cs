@@ -27,16 +27,9 @@ namespace Models
             SWIFT = swift;
         }
 
-        public void Execute(Operation operation)
+        public bool Execute(Operation operation)
         {
-            operation.Execute();
-        }
-
-        public bool RaiseLoan(Customer customer, int amount)
-        {
-            _accounts[customer].RaiseLoan(new Loan(amount, new InterestRate(0.1, 24, 12)));
-            return true; // confirmation
-            // return false; -> Bank can refuse to give a loan
+            return operation.Execute();
         }
 
         public static int NextAccountId()

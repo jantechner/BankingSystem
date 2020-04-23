@@ -35,7 +35,7 @@ namespace Models
             return _toNumber;
         }
 
-        public override void Execute()
+        public override bool Execute()
         {
             if (_status == Status.Created)
             {
@@ -56,6 +56,8 @@ namespace Models
                 _status = Status.Executed;
                 _toAccount.Bank.Execute(new IncreaseBalance(_toAccount, _amount));
             }
+
+            return true;
         }
     }
 }
