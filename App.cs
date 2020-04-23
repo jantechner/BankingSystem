@@ -18,7 +18,7 @@ namespace BankingSystem
             var customer1 = new Customer("87040500342") {Name = "Jan", Surname = "Kowalski"};
             var customer2 = new Customer("97021500531") {Name = "Grzegorz", Surname = "Nowak"};
             customer1.Open<DebitAccount>(globalBank);
-            customer2.Open<Account>(millenium);
+            customer2.Open<PlainAccount>(millenium);
             var account1 = customer1.GetAccounts()[0];
             var account2 = customer2.GetAccounts()[0];
             

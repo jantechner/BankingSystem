@@ -41,10 +41,9 @@ namespace Models
             {
                 _fromAccount.Bank.Execute(new DecreaseBalance(_fromAccount, _amount));
                 _status = Status.Forwarded;
-                if (_fromAccount.Bank.isAccountLocal(_toNumber, out _toAccount))
+                if (_fromAccount.Bank.HasAccount(_toNumber, out _toAccount))
                 {
                     _status = Status.Executed;
-                    _toAccount = _fromAccount.Bank.getAccountByNumber(_toNumber);
                     _fromAccount.Bank.Execute(new IncreaseBalance(_toAccount, _amount));
                 }
                 else

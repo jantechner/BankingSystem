@@ -36,19 +36,6 @@ namespace Models
             Loans.Add(loan);
         }
 
-        // public void OutgoingTransfer(string accountNumber, double amount)
-        // {
-        //     DecreaseBalance(amount);
-        //     Bank.OutgoingTransfer(new Transfer(this.Number, accountNumber, amount));
-        //     History.Add(new AccountOperation(this));
-        // }
-        //
-        // public void IncomingTransfer(Transfer transfer)
-        // {
-        //     IncreaseBalance(transfer.Amount);
-        //     History.Add(new AccountOperation(this));
-        // }
-
         public override string ToString()
         {
             return $"ID: {_id}\n" +

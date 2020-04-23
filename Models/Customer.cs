@@ -19,7 +19,8 @@ namespace Models
 
         public void Open<T>(Bank bank) where T : Account
         {
-            bank.Open<T>(this);
+            bank.Execute(new OpenAccount<T>(this, bank));
+            // bank.Open<T>(this);
             Banks.Add(bank);
         }
 

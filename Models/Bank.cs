@@ -32,32 +32,6 @@ namespace Models
             operation.Execute();
         }
 
-        public void Open<T>(Customer customer) where T : Account
-        {
-            //simplest version, but a possible code smell -> for discussion
-            // var newAccount = (T)Activator.CreateInstance(typeof(T), new Account(_accountCounter++, customer, "number", new InterestRate(0.05, 24, 6)))
-
-            Account newAccount;
-            if (typeof(T) == typeof(Account))
-            {
-                newAccount = new PlainAccount(this, _accountCounter++, customer, customer.Pesel,
-                    new InterestRate(0.05, 24, 6));
-            }
-            else if (typeof(T) == typeof(DebitAccount))
-            {
-                newAccount = new DebitAccount(this, _accountCounter++, customer, customer.Pesel,
-                    new InterestRate(0.05, 24, 6));
-            }
-            else
-            {
-                throw new Exception("incorrect ");
-            }
-
-            _accounts[customer] = newAccount;
-
-            Console.WriteLine($"Opening account for {customer}");
-        }
-
         public bool RaiseLoan(Customer customer, int amount)
         {
             _accounts[customer].RaiseLoan(new Loan(amount, new InterestRate(0.1, 24, 12)));
@@ -65,12 +39,17 @@ namespace Models
             // return false; -> Bank can refuse to give a loan
         }
 
-        public bool isAccountLocal(String accountNumber, out Account wantedAccount)
+        public static int NextAccountId()
         {
-            wantedAccount = null;
-            var localAccount = _accounts.Values.FirstOrDefault(a => a.Number == accountNumber);
-            if (localAccount == null) return false;
-            wantedAccount = localAccount;
+            return _accountCounter++;
+        }
+
+        public bool HasAccount(string accountNumber, out Account account)
+        {
+            account = null;
+            var foundAccount = _accounts.Values.FirstOrDefault(a => a.Number == accountNumber);
+            if (foundAccount == null) return false;
+            account = foundAccount;
             return true;
         }
 
@@ -79,14 +58,9 @@ namespace Models
             return _accounts[customer];
         }
 
-        public bool HasAccountWithNumber(string number)
+        public void AddNewAccount(Customer customer, Account account)
         {
-            return _accounts.Values.Any(account => account.Number == number);
-        }
-
-        public Account getAccountByNumber(string number)
-        {
-            return _accounts.Values.FirstOrDefault(account => account.Number == number);
+            _accounts[customer] = account;
         }
     }
 }
