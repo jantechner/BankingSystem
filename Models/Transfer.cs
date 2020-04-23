@@ -4,26 +4,59 @@ namespace Models
 {
     public class Transfer : Operation
     {
-        public enum TransferStatus
+        public enum Status
         {
-            Pending,
-            Executed // TODO not used
+            Created,
+            Forwarded,
+            Executed
         }
 
-        public String From { get; }
+        private readonly Account _fromAccount;
+        private Account _toAccount;
+        private readonly string _toNumber;
+        private readonly double _amount;
+        private Status _status;
 
-        public String To { get; }
-
-        public TransferStatus Status { get; }
-
-        public double Amount { get; }
-
-        public Transfer(String from, String to, double amount, string description) : base(description)
+        public Transfer(Account from, String to, double amount)
         {
-            From = from;
-            To = to;
-            Status = TransferStatus.Pending;
-            Amount = amount;
+            _fromAccount = from;
+            _toNumber = to;
+            _status = Status.Created;
+            _amount = amount;
+        }
+
+        public void SetTargetAccount(Account account)
+        {
+            _toAccount = account;
+        }
+
+        public string GetTargetNumber()
+        {
+            return _toNumber;
+        }
+
+        public override void Execute()
+        {
+            if (_status == Status.Created)
+            {
+                _fromAccount.Bank.Execute(new DecreaseBalance(_fromAccount, _amount));
+                _status = Status.Forwarded;
+                if (_fromAccount.Bank.isAccountLocal(_toNumber, out _toAccount))
+                {
+                    _status = Status.Executed;
+                    _toAccount = _fromAccount.Bank.getAccountByNumber(_toNumber);
+                    _fromAccount.Bank.Execute(new IncreaseBalance(_toAccount, _amount));
+                }
+                else
+                {
+                    InterBankPaymentManager.OrderToTransfer(this);
+                }
+            }
+            else
+            {
+                _status = Status.Executed;
+                _toAccount.Bank.Execute(new IncreaseBalance(_toAccount, _amount));
+            }
         }
     }
 }

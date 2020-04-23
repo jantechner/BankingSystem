@@ -26,8 +26,11 @@ namespace Models
 
         private static void ExecuteTransfer(Transfer transfer)
         {
-            var foundBank = _registeredBanks.FirstOrDefault(bank => bank.HasAccountWithNumber(transfer.To));
-            foundBank?.IncomingTransfer(transfer);
+            var targetBank =
+                _registeredBanks.FirstOrDefault(bank => bank.HasAccountWithNumber(transfer.GetTargetNumber()));
+            var targetAccount = targetBank?.getAccountByNumber(transfer.GetTargetNumber());
+            transfer.SetTargetAccount(targetAccount);
+            targetBank?.Execute(transfer);
         }
 
         public static void RegisterBank(Bank bank)

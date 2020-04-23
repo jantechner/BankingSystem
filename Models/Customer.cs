@@ -34,6 +34,16 @@ namespace Models
             return accounts;
         }
 
+        public void WithdrawMoney(Account account, double amount)
+        {
+            account.Bank.Execute(new DecreaseBalance(account, amount));
+        }
+        
+        public void DepositMoney(Account account, double amount)
+        {
+            account.Bank.Execute(new IncreaseBalance(account, amount));
+        }
+
         public bool RequestLoan(int amount, Bank bank)
         {
             return Banks.Contains(bank) && bank.RaiseLoan(this, amount);
