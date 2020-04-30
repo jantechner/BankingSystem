@@ -18,6 +18,7 @@ namespace Models
         public IEnumerable InterestRates { get; } // co to ma robić?
         public ReportingManager ReportingManager { get; }
         public IList _history = new OperationsHistory();
+        private ReportingManager _reportingManager = new ReportingManager();
 
         //TODO zaimplementować ReportingManagera
         public Bank(string name, string countryCode, string swift)
@@ -55,5 +56,13 @@ namespace Models
         {
             _accounts[customer] = account;
         }
+
+        public void CreateReports()
+        {
+            _reportingManager.Generate(new MainReport(this));
+            _reportingManager.Generate(new AssetsReport(this));
+            _reportingManager.Generate(new AccountsReport(this));
+        }
+        
     }
 }

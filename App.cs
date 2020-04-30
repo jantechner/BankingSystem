@@ -37,6 +37,8 @@ namespace BankingSystem
 
             Console.WriteLine(account1);
             Console.WriteLine(account2);
+            
+            globalBank.CreateReports();
         }
     }
 }
