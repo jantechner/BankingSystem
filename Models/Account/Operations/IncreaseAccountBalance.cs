@@ -15,6 +15,7 @@ namespace Models
 
         public override bool Execute()
         {
+            _account.History.Add(this);
             if (_account is PlainAccount)
             {
                 _account.Balance += _amount;
