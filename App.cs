@@ -18,24 +18,27 @@ namespace BankingSystem
             var customer1 = new Customer("87040500342") {Name = "Jan", Surname = "Kowalski"};
             var customer2 = new Customer("97021500531") {Name = "Grzegorz", Surname = "Nowak"};
             customer1.Open<DebitAccount>(globalBank);
-            customer2.Open<Account>(millenium);
+            customer2.Open<PlainAccount>(millenium);
             var account1 = customer1.GetAccounts()[0];
             var account2 = customer2.GetAccounts()[0];
+            
+            globalBank.Execute(new IncreaseBalance(account1, 1000));
+            globalBank.Execute(new DecreaseBalance(account1, 500));
+            globalBank.Execute(new DecreaseBalance(account1, 600));
+            globalBank.Execute(new IncreaseBalance(account1, 400));
 
-            account1.IncreaseBalance(1000);
-            account1.DecreaseBalance(500);
-            account1.DecreaseBalance(600);
-            account1.IncreaseBalance(500);
-
-            customer1.RequestLoan(10000, globalBank);
+            customer1.RequestLoan(account1, 10000, globalBank);
             account1.Loans[0].RepayLoan(100);
 
-            account1.OutgoingTransfer("97021500531", 200);
+            globalBank.Execute(new Transfer(account1, "97021500531", 200));
+            // account1.OutgoingTransfer("97021500531", 200);
 
             InterBankPaymentManager.ExecuteTransfers();
 
             Console.WriteLine(account1);
             Console.WriteLine(account2);
+            
+            globalBank.CreateReports();
         }
     }
 }

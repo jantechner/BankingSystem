@@ -19,7 +19,8 @@ namespace Models
 
         public void Open<T>(Bank bank) where T : Account
         {
-            bank.Open<T>(this);
+            bank.Execute(new OpenAccount<T>(this, bank));
+            // bank.Open<T>(this);
             Banks.Add(bank);
         }
 
@@ -34,9 +35,19 @@ namespace Models
             return accounts;
         }
 
-        public bool RequestLoan(int amount, Bank bank)
+        public void WithdrawMoney(Account account, double amount)
         {
-            return Banks.Contains(bank) && bank.RaiseLoan(this, amount);
+            account.Bank.Execute(new DecreaseBalance(account, amount));
+        }
+        
+        public void DepositMoney(Account account, double amount)
+        {
+            account.Bank.Execute(new IncreaseBalance(account, amount));
+        }
+
+        public bool RequestLoan(Account account, int amount, Bank bank)
+        {
+            return Banks.Contains(bank) && bank.Execute(new RaiseLoan(account, amount));
         }
 
         // public void innerBankTransfer(Bank bank, string from, string to, double amount)

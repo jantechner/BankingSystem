@@ -18,6 +18,7 @@ namespace Models
         public IEnumerable InterestRates { get; } // co to ma robić?
         public ReportingManager ReportingManager { get; }
         public IList _history = new OperationsHistory();
+        private ReportingManager _reportingManager = new ReportingManager();
 
         //TODO zaimplementować ReportingManagera
         public Bank(string name, string countryCode, string swift)
@@ -27,57 +28,23 @@ namespace Models
             SWIFT = swift;
         }
 
-        public void Open<T>(Customer customer) where T : Account
+        public bool Execute(Operation operation)
         {
-            //simplest version, but a possible code smell -> for discussion
-            // var newAccount = (T)Activator.CreateInstance(typeof(T), new Account(_accountCounter++, customer, "number", new InterestRate(0.05, 24, 6)))
-
-            Account newAccount;
-            if (typeof(T) == typeof(Account))
-            {
-                newAccount = new PlainAccount(this, _accountCounter++, customer, customer.Pesel,
-                    new InterestRate(0.05, 24, 6));
-            }
-            else if (typeof(T) == typeof(DebitAccount))
-            {
-                newAccount = new DebitAccount(this, _accountCounter++, customer, customer.Pesel,
-                    new InterestRate(0.05, 24, 6));
-            }
-            else
-            {
-                throw new Exception("incorrect ");
-            }
-
-            _accounts[customer] = newAccount;
-
-            Console.WriteLine($"Opening account for {customer}");
+            return operation.Execute();
         }
 
-        public void OutgoingTransfer(Transfer transfer)
+        public static int NextAccountId()
         {
-            var localAccount = _accounts.Values.FirstOrDefault(a => a.Number == transfer.To);
-            if (localAccount != null)
-            {
-                localAccount.IncomingTransfer(transfer);
-            }
-            else
-            {
-                Console.WriteLine("Not local");
-                InterBankPaymentManager.OrderToTransfer(transfer);
-            }
+            return _accountCounter++;
         }
 
-        public void IncomingTransfer(Transfer transfer)
+        public bool HasAccount(string accountNumber, out Account account)
         {
-            var account = _accounts.Values.FirstOrDefault(a => a.Number == transfer.To);
-            account?.IncomingTransfer(transfer);
-        }
-
-        public bool RaiseLoan(Customer customer, int amount)
-        {
-            _accounts[customer].RaiseLoan(new Loan(amount, new InterestRate(0.1, 24, 12)));
-            return true; // confirmation
-            // return false; -> Bank can refuse to give a loan
+            account = null;
+            var foundAccount = _accounts.Values.FirstOrDefault(a => a.Number == accountNumber);
+            if (foundAccount == null) return false;
+            account = foundAccount;
+            return true;
         }
 
         public Account GetCustomerAccount(Customer customer)
@@ -85,24 +52,17 @@ namespace Models
             return _accounts[customer];
         }
 
-        public bool HasAccountWithNumber(string number)
+        public void AddNewAccount(Customer customer, Account account)
         {
-            return _accounts.Values.Any(account => account.Number == number);
+            _accounts[customer] = account;
         }
 
-        // public void innerBankTransfer(string from, string to, double amount, string givenPassword)
-        // {
-        //     if (!accountId2account.TryGetValue(from, out Account sender))
-        //         throw new SystemException("There is no such sender account");
-        //     if (!accountId2account.TryGetValue(to, out Account receiver))
-        //         throw new SystemException("There is no such receiver account");
-        //     if (!accountId2password.TryGetValue(from, out string savedPassword))
-        //         throw new SystemException("There is no password saved for sender account");
-        //     if (givenPassword != savedPassword)
-        //         throw new SystemException("Wrong password");
-        //
-        //     sender.WithdrawMoney(amount);
-        //     receiver.DepositMoney(amount);
-        // }
+        public void CreateReports()
+        {
+            _reportingManager.Generate(new MainReport(this));
+            _reportingManager.Generate(new AssetsReport(this));
+            _reportingManager.Generate(new AccountsReport(this));
+        }
+        
     }
 }
