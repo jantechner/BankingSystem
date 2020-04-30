@@ -1,40 +1,79 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Models
 {
-    public class Account
+    public abstract class Account
     {
-        private readonly Customer owner;
-        private readonly string number;
-        private double balance = 0;
-        //private readonly DateTime openingDate = DateTime.Today;
-        //TODO currency
-        //private readonly Currency currency = Currency.PLN;
+        private Bank _bank;
+        private readonly int _id;
+        private readonly Customer _owner;
+        public DateTime OpeningDate { get; } = DateTime.Now;
+        public Currency Currency { get; }
+        public double Balance { get; protected set; }
+        public string Number { get; }
 
-        public Account(Customer _owner, string _number)
-        {
-            owner = _owner;
-            number = _number;
-        }
-        public void takeMoney(double amount)
-        {
-            if (balance < amount)
-                throw new SystemException("Not enough funds");
+        // private IList Deposits = new DepositsStore();    // nie jestem pewien jak to ma wyglądać
 
-            balance -= amount;
-        }
-        public void giveMoney(double amount)
+        public IList<Loan> Loans { get; } = new LoansStore();
+        public InterestRate InterestRate { get; } // jak użyć stopy procentowej w koncie???
+        public List<Operation> History { get; } = new List<Operation>();
+
+        protected Account(Bank bank, int accountId, Customer customer, string number, InterestRate interestRate,
+            Currency currency = Currency.PL)
         {
-            balance += amount;
+            _bank = bank;
+            _id = accountId;
+            _owner = customer;
+            Currency = currency;
+            Number = number;
+            InterestRate = interestRate;
         }
-        public void getBalance()
+
+        public abstract void DecreaseBalance(double amount);
+
+        public abstract void IncreaseBalance(double amount);
+
+        public void WithdrawMoney(double amount)
         {
-            Console.WriteLine(balance.ToString());
+            DecreaseBalance(amount);
+        }
+
+        public void DepositMoney(double amount)
+        {
+            IncreaseBalance(amount);
+        }
+
+        public void RaiseLoan(Loan loan)
+        {
+            Loans.Add(loan);
+        }
+
+        public void OutgoingTransfer(string accountNumber, double amount)
+        {
+            DecreaseBalance(amount);
+            _bank.OutgoingTransfer(new Transfer(this.Number, accountNumber, amount, "outgoing transfer"));
+            History.Add(new AccountOperation($"Outgoing transfer to {accountNumber}", this));
+        }
+
+        public void IncomingTransfer(Transfer transfer)
+        {
+            IncreaseBalance(transfer.Amount);
+            History.Add(new AccountOperation($"Incoming transfer from {transfer.From}", this));
         }
 
         public override string ToString()
         {
-            return $"Owner: {owner}\nNumber: {number}";
+            return $"ID: {_id}\n" +
+                   $"Owner: {_owner}\n" +
+                   $"Number: {Number}\n" +
+                   $"Opening date: {OpeningDate}\n" +
+                   $"Currency: {Currency}\n" +
+                   $"Balance: {Balance}\n" +
+                   $"InterestRate: {InterestRate}\n" +
+                   $"Loans: {Loans}\n" +
+                   $"History: {History}";
         }
     }
 }

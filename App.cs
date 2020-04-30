@@ -7,22 +7,35 @@ namespace BankingSystem
     {
         static void Main(string[] args)
         {
-            var globalBank = new Bank();
+            var globalBank = new Bank("PKO BP", "PL", "BPKOPLPW");
+            var millenium = new Bank("Millenium", "PL", "MILL");
 
-            var c1 = new Customer("87040500342") { Name = "Jan", Surname = "Kowalski" };
-            c1.openAccount(globalBank);
-            var account = c1.getAccounts()[0];
-            account.bank.depositMoney(account.accountId, 100);
-            c1.showBalance(account.bank, account.accountId);
+            InterBankPaymentManager.RegisterBank(globalBank);
+            InterBankPaymentManager.RegisterBank(millenium);
 
-            var c2 = new Customer("17040500342") { Name = "Tomasz", Surname = "Nowak" };
-            c2.openAccount(globalBank);
-            var account2 = c2.getAccounts()[0];
+            Console.WriteLine(globalBank.Name + " " + globalBank.CountryCode + " " + globalBank.SWIFT);
 
-            c1.innerBankTransfer(globalBank, account.accountId, account2.accountId, 50);
-            c2.showBalance(account2.bank, account2.accountId);
+            var customer1 = new Customer("87040500342") {Name = "Jan", Surname = "Kowalski"};
+            var customer2 = new Customer("97021500531") {Name = "Grzegorz", Surname = "Nowak"};
+            customer1.Open<DebitAccount>(globalBank);
+            customer2.Open<Account>(millenium);
+            var account1 = customer1.GetAccounts()[0];
+            var account2 = customer2.GetAccounts()[0];
 
-            Console.ReadKey();
+            account1.IncreaseBalance(1000);
+            account1.DecreaseBalance(500);
+            account1.DecreaseBalance(600);
+            account1.IncreaseBalance(500);
+
+            customer1.RequestLoan(10000, globalBank);
+            account1.Loans[0].RepayLoan(100);
+
+            account1.OutgoingTransfer("97021500531", 200);
+
+            InterBankPaymentManager.ExecuteTransfers();
+
+            Console.WriteLine(account1);
+            Console.WriteLine(account2);
         }
     }
 }

@@ -2,72 +2,107 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Models
 {
     public class Bank
     {
+        private static int _accountCounter = 0;
+
         public string Name { get; }
         public string CountryCode { get; }
         public string SWIFT { get; }
-        private IDictionary accounts = new AccountsStore();
-        public IEnumerable InterestRates { get; }
-        private Dictionary<string, Account> accountId2account = new Dictionary<string, Account>();
-        private Dictionary<string, string> accountId2password = new Dictionary<string, string>();
-        private double accountCounter = 0;
+        private IDictionary<Customer, Account> _accounts = new AccountsStore();
+        public IEnumerable InterestRates { get; } // co to ma robić?
         public ReportingManager ReportingManager { get; }
-        public void openAccount2(Customer customer)
+        public IList _history = new OperationsHistory();
+
+        //TODO zaimplementować ReportingManagera
+        public Bank(string name, string countryCode, string swift)
         {
-            accounts.Add(customer, this);
-            System.Console.WriteLine($"Opening account for {customer}");
+            Name = name;
+            CountryCode = countryCode;
+            SWIFT = swift;
         }
 
-        public (string accountId, string password) openAccount(Customer customer)
+        public void Open<T>(Customer customer) where T : Account
         {
-            //create new account
-            accountCounter++;
-            string accountId = accountCounter.ToString();
-            accountId2account.Add(accountId, new Account(customer, accountId));
+            //simplest version, but a possible code smell -> for discussion
+            // var newAccount = (T)Activator.CreateInstance(typeof(T), new Account(_accountCounter++, customer, "number", new InterestRate(0.05, 24, 6)))
 
-            //generate random password
-            string password = Path.GetRandomFileName();
-            accountId2password.Add(accountId, password);
+            Account newAccount;
+            if (typeof(T) == typeof(Account))
+            {
+                newAccount = new PlainAccount(this, _accountCounter++, customer, customer.Pesel,
+                    new InterestRate(0.05, 24, 6));
+            }
+            else if (typeof(T) == typeof(DebitAccount))
+            {
+                newAccount = new DebitAccount(this, _accountCounter++, customer, customer.Pesel,
+                    new InterestRate(0.05, 24, 6));
+            }
+            else
+            {
+                throw new Exception("incorrect ");
+            }
 
-            return (accountId, password);
+            _accounts[customer] = newAccount;
+
+            Console.WriteLine($"Opening account for {customer}");
         }
-        public void showBalance(string accountId, string givenPassword)
+
+        public void OutgoingTransfer(Transfer transfer)
         {
-            if (!accountId2account.TryGetValue(accountId, out Account account))
-                throw new SystemException("There is no such account");
-            if (!accountId2password.TryGetValue(accountId, out string savedPassword))
-                throw new SystemException("There is no password saved for such account");
-            if (givenPassword != savedPassword)
-                throw new SystemException("Wrong password");
-
-            account.getBalance();
+            var localAccount = _accounts.Values.FirstOrDefault(a => a.Number == transfer.To);
+            if (localAccount != null)
+            {
+                localAccount.IncomingTransfer(transfer);
+            }
+            else
+            {
+                Console.WriteLine("Not local");
+                InterBankPaymentManager.OrderToTransfer(transfer);
+            }
         }
-        public void depositMoney(string accountId, double amount)
+
+        public void IncomingTransfer(Transfer transfer)
         {
-            if (!accountId2account.TryGetValue(accountId, out Account account))
-                throw new SystemException("There is no such account");
-            if (amount < 0)
-                throw new ArgumentException("You can't deposit negative amount of money");
-
-            account.giveMoney(amount);
+            var account = _accounts.Values.FirstOrDefault(a => a.Number == transfer.To);
+            account?.IncomingTransfer(transfer);
         }
-        public void innerBankTransfer(string from, string to, double amount, string givenPassword)
+
+        public bool RaiseLoan(Customer customer, int amount)
         {
-            if (!accountId2account.TryGetValue(from, out Account sender))
-                throw new SystemException("There is no such sender account");
-            if (!accountId2account.TryGetValue(to, out Account receiver))
-                throw new SystemException("There is no such receiver account");
-            if (!accountId2password.TryGetValue(from, out string savedPassword))
-                throw new SystemException("There is no password saved for sender account");
-            if (givenPassword != savedPassword)
-                throw new SystemException("Wrong password");
-
-            sender.takeMoney(amount);
-            receiver.giveMoney(amount);
+            _accounts[customer].RaiseLoan(new Loan(amount, new InterestRate(0.1, 24, 12)));
+            return true; // confirmation
+            // return false; -> Bank can refuse to give a loan
         }
+
+        public Account GetCustomerAccount(Customer customer)
+        {
+            return _accounts[customer];
+        }
+
+        public bool HasAccountWithNumber(string number)
+        {
+            return _accounts.Values.Any(account => account.Number == number);
+        }
+
+        // public void innerBankTransfer(string from, string to, double amount, string givenPassword)
+        // {
+        //     if (!accountId2account.TryGetValue(from, out Account sender))
+        //         throw new SystemException("There is no such sender account");
+        //     if (!accountId2account.TryGetValue(to, out Account receiver))
+        //         throw new SystemException("There is no such receiver account");
+        //     if (!accountId2password.TryGetValue(from, out string savedPassword))
+        //         throw new SystemException("There is no password saved for sender account");
+        //     if (givenPassword != savedPassword)
+        //         throw new SystemException("Wrong password");
+        //
+        //     sender.WithdrawMoney(amount);
+        //     receiver.DepositMoney(amount);
+        // }
     }
 }
