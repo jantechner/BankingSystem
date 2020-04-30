@@ -19,6 +19,7 @@ namespace Models
         public ReportingManager ReportingManager { get; }
         public IList _history = new OperationsHistory();
         private ReportingManager _reportingManager = new ReportingManager();
+        private List<Operation> _operations = new List<Operation>();
 
         //TODO zaimplementować ReportingManagera
         public Bank(string name, string countryCode, string swift)
@@ -30,6 +31,7 @@ namespace Models
 
         public bool Execute(Operation operation)
         {
+            _operations.Add(operation);
             return operation.Execute();
         }
 
