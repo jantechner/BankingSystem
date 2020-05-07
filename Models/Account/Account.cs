@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Models
 {
@@ -41,6 +42,16 @@ namespace Models
                    $"InterestRate: {interestRate}\n" +
                    $"Loans: {loans}\n" +
                    $"History: {history}";
+        }
+
+        public double CalcInterest()
+        {
+            return InterestRate.Calculate(Balance);
+        }
+
+        public void ChangeInterestRate(InterestMechanism interestRate)
+        {
+            InterestRate = interestRate;
         }
     }
 }

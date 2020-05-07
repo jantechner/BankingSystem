@@ -39,6 +39,12 @@ namespace BankingSystem
             Console.WriteLine(account2);
             
             globalBank.CreateReports();
+
+            Console.WriteLine(account1.CalcInterest());
+            
+            globalBank.Execute(new ChangeInterestRate(account1, new AnotherInterestRate(0.01)));
+
+            Console.WriteLine(account1.CalcInterest());
         }
     }
 }
