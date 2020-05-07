@@ -25,8 +25,9 @@ namespace Models
             }
             else if (typeof(T) == typeof(DebitAccount))
             {
-                newAccount = new DebitAccount(_bank, Bank.NextAccountId(), _customer, _customer.Pesel,
+                var account = new PlainAccount(_bank, Bank.NextAccountId(), _customer, _customer.Pesel,
                     new InterestRate(0.05, 24, 6));
+                newAccount = new DebitAccount(account);
             }
             else
             {
