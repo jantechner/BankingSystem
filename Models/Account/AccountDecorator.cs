@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Models
@@ -9,7 +10,6 @@ namespace Models
         public override Bank Bank => account.Bank;
         public override Currency Currency => account.Currency;
         public override string Number => account.Number;
-        public override InterestRate InterestRate => account.InterestRate;
         public override IList<Loan> Loans => account.Loans;
         public override List<Operation> History => account.History;
 
@@ -19,9 +19,16 @@ namespace Models
             set => account.Balance = value;
         }
 
+        public override InterestMechanism InterestRate 
+        { 
+            get => account.InterestRate;
+            set => account.InterestRate = value;
+        }
+
         protected AccountDecorator(Account account)
         {
             this.account = account;
+            Console.WriteLine("INTEREST RATE" + account.InterestRate);
         }
 
         public override void DecreaseBalance(double amount)

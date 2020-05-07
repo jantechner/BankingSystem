@@ -5,7 +5,7 @@ namespace Models
 {
     public class PlainAccount : Account
     {
-        public PlainAccount(Bank bank, int id, Customer customer, string number, InterestRate interestRate,
+        public PlainAccount(Bank bank, int id, Customer customer, string number, InterestMechanism interestRate,
             Currency currency = Currency.PL)
         {
             this.bank = bank;
@@ -24,10 +24,14 @@ namespace Models
 
         public override IList<Loan> Loans => loans;
         public override List<Operation> History => history;
+        public override InterestMechanism InterestRate 
+        { 
+            get => interestRate;
+            set => interestRate = value;
+        }
         public override Bank Bank => bank;
         public override Currency Currency => currency;
         public override string Number => number;
-        public override InterestRate InterestRate => interestRate;
 
         public override void DecreaseBalance(double amount)
         {

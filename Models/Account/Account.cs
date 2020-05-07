@@ -13,7 +13,7 @@ namespace Models
         private readonly DateTime _openingDate = DateTime.Now;
         protected Currency currency;
         protected string number;
-        protected InterestRate interestRate;
+        protected InterestMechanism interestRate;
         protected double balance;
         protected IList<Loan> loans = new LoansStore();
         protected List<Operation> history = new List<Operation>();
@@ -25,7 +25,7 @@ namespace Models
         public abstract Bank Bank { get; }
         public abstract Currency Currency { get; }
         public abstract string Number { get; }
-        public abstract InterestRate InterestRate { get; }
+        public abstract InterestMechanism InterestRate { get; set; }
 
         public abstract void DecreaseBalance(double amount);
 
@@ -42,16 +42,6 @@ namespace Models
                    $"InterestRate: {interestRate}\n" +
                    $"Loans: {loans}\n" +
                    $"History: {history}";
-        }
-
-        public double CalcInterest()
-        {
-            return InterestRate.Calculate(Balance);
-        }
-
-        public void ChangeInterestRate(InterestMechanism interestRate)
-        {
-            InterestRate = interestRate;
         }
     }
 }
