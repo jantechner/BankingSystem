@@ -1,6 +1,6 @@
 namespace Models
 {
-    public interface InterestMechanism
+    public interface IInterestMechanism
     {
         public double Calculate(double balance);
     }

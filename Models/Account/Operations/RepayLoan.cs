@@ -1,21 +1,23 @@
 namespace Models
 {
-    public class RaiseLoan : Operation
+    public class RepayLoan : Operation
     {
         private Account _account;
+        private Loan _loan;
         private int _amount;
 
-        public RaiseLoan(Account account, int amount)
+        public RepayLoan(Account account, Loan loan, int amount)
         {
             _account = account;
+            _loan = loan;
             _amount = amount;
-            Description = "Raising a loan for " + amount;
+            Description = "Repaying a loan: " + amount;
         }
 
         public override bool Execute()
         {
             _account.History.Add(this);
-            _account.Loans.Add(new Loan(_amount, new InterestRate(0.1, 24, 12)));
+            _loan.RemainingAmount -= _amount;
             return true;
         }
     }

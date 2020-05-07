@@ -4,15 +4,23 @@ namespace Models
 {
     public class MainReport : Report
     {
-        public MainReport(Bank bank) : base(bank)
+        public MainReport()
         {
+            Content.Add("Main report:");
         }
 
-        public override Report Create()
+        public override void Create(PlainAccount account)
         {
-            //TODO implement actual report generating
-            Console.WriteLine("New Main Report generated");
-            return this;
+            Content.Add("Report from account with number " + account.Number);
+        }
+
+        public override void Create(DebitAccount account)
+        {
+            Content.Add("Report from debit account with number " + account.Number);
+        }
+
+        public override void Create(Operation operation)
+        {
         }
     }
 }

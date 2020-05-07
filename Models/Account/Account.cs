@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Runtime.InteropServices;
 
 namespace Models
 {
-    public abstract class Account
+    public abstract class Account : IReportable
     {
         protected Bank bank;
         protected int id;
@@ -13,7 +14,7 @@ namespace Models
         private readonly DateTime _openingDate = DateTime.Now;
         protected Currency currency;
         protected string number;
-        protected InterestMechanism interestRate;
+        protected IInterestMechanism interestRate;
         protected double balance;
         protected IList<Loan> loans = new LoansStore();
         protected List<Operation> history = new List<Operation>();
@@ -25,11 +26,13 @@ namespace Models
         public abstract Bank Bank { get; }
         public abstract Currency Currency { get; }
         public abstract string Number { get; }
-        public abstract InterestMechanism InterestRate { get; set; }
+        public abstract IInterestMechanism InterestRate { get; set; }
 
         public abstract void DecreaseBalance(double amount);
 
         public abstract void IncreaseBalance(double amount);
+
+        public abstract void Accept(Report report);
 
         public override string ToString()
         {

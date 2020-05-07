@@ -28,7 +28,7 @@ namespace BankingSystem
             globalBank.Execute(new IncreaseBalance(account1, 400));
 
             customer1.RequestLoan(account1, 10000, globalBank);
-            account1.Loans[0].RepayLoan(100);
+            customer1.RepayLoan(account1, account1.Loans[0], 100, globalBank);
 
             globalBank.Execute(new Transfer(account1, "97021500531", 200));
             // account1.OutgoingTransfer("97021500531", 200);
@@ -37,14 +37,18 @@ namespace BankingSystem
 
             Console.WriteLine(account1);
             Console.WriteLine(account2);
-            
-            globalBank.CreateReports();
+
+            foreach (var loan in account1.Loans)
+            {
+                Console.WriteLine(loan);
+            }
 
             globalBank.Execute(new CalculateInterest(account1));
-
             globalBank.Execute(new ChangeInterestRate(account1, new AnotherInterestRate(0.01)));
-
             globalBank.Execute(new CalculateInterest(account1));
+
+            Console.WriteLine(globalBank.Generate(new AccountsReport()).ToString());
+            
         }
     }
 }

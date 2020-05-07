@@ -26,6 +26,11 @@ namespace Models
             _debit = 0;
         }
 
+        public override void Accept(Report report)
+        {
+            report.Create(this);
+        }
+
         public override string ToString()
         {
             return base.ToString() + $"\nDebit: {_debit}\n";

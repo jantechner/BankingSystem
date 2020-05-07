@@ -16,10 +16,7 @@ namespace Models
         public string SWIFT { get; }
         private IDictionary<Customer, Account> _accounts = new AccountsStore();
         public IEnumerable InterestRates { get; } // co to ma robić?
-        public ReportingManager ReportingManager { get; }
-        public IList _history = new OperationsHistory();
-        private ReportingManager _reportingManager = new ReportingManager();
-        private List<Operation> _operations = new List<Operation>();
+        public IList<Operation> _history = new OperationsHistory();
 
         //TODO zaimplementować ReportingManagera
         public Bank(string name, string countryCode, string swift)
@@ -31,7 +28,7 @@ namespace Models
 
         public bool Execute(Operation operation)
         {
-            _operations.Add(operation);
+            _history.Add(operation);
             return operation.Execute();
         }
 
@@ -59,12 +56,14 @@ namespace Models
             _accounts[customer] = account;
         }
 
-        public void CreateReports()
+        public Report Generate(Report report)
         {
-            _reportingManager.Generate(new MainReport(this));
-            _reportingManager.Generate(new AssetsReport(this));
-            _reportingManager.Generate(new AccountsReport(this));
+            foreach (var account in _accounts.Values)
+            {
+                account.Accept(report);
+            }
+
+            return report;
         }
-        
     }
 }
