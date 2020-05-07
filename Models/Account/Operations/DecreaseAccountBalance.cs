@@ -15,20 +15,7 @@ namespace Models
 
         public override bool Execute()
         {
-            if (_account is PlainAccount)
-            {
-                if (_account.Balance < _amount)
-                    throw new Exception("Not enough funds");
-                _account.Balance -= _amount;
-            }
-            else if (_account is DebitAccount a)
-            {
-                a.Balance -= _amount;
-                if (a.Balance >= 0) return true;
-                a.Debit = a.Debit == 0.0 ? Math.Abs(a.Balance) : a.Debit + _amount;
-                a.Balance = 0;
-            }
-
+            _account.DecreaseBalance(_amount);
             return true;
         }
     }
