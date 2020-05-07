@@ -1,6 +1,6 @@
 namespace Models
 {
-    public class AnotherInterestRate : InterestMechanism
+    public class AnotherInterestRate : IInterestMechanism
     {
         private double _value;
 
@@ -13,6 +13,11 @@ namespace Models
         {
             //TODO more sophisticated calculations
             return balance * _value;
+        }
+        
+        public override string ToString()
+        {
+            return $"({_value * 100}%)";
         }
     }
 }

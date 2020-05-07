@@ -11,10 +11,12 @@ namespace Models
         {
             _amount = amount;
             _account = account;
+            Description = "Increase balance by " + amount;
         }
 
         public override bool Execute()
         {
+            _account.History.Add(this);
             _account.IncreaseBalance(_amount);
             return true;
         }

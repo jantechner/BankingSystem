@@ -1,20 +1,28 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Models
 {
     public abstract class Report
     {
-        public DateTime Date { get; }
+        public DateTime Date { get; } = DateTime.Now;
 
-        public String Entity { get; }
+        public List<String> Content { get; } = new List<string>();
 
-        public Bank _bank;
+        public abstract void Create(PlainAccount account);
+        public abstract void Create(DebitAccount account);
 
-        public Report(Bank bank)
+        public void Create(Loan loan)
         {
-            _bank = bank;
+            Content.Add("\tLoan report - remaining amount: " + loan.RemainingAmount);
         }
 
-        public abstract Report Create();
+        public abstract void Create(Operation operation);
+
+        public override string ToString()
+        {
+            return Content.Aggregate("", (current, content) => current + (content + "\n"));
+        }
     }
 }

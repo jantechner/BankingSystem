@@ -50,6 +50,11 @@ namespace Models
             return Banks.Contains(bank) && bank.Execute(new RaiseLoan(account, amount));
         }
 
+        public bool RepayLoan(Account account, Loan loan, int amount, Bank bank)
+        {
+            return Banks.Contains(bank) && bank.Execute(new RepayLoan(account, loan, amount));
+        }
+
         // public void innerBankTransfer(Bank bank, string from, string to, double amount)
         // {
         //     if (!accounts.TryGetValue((bank, from), out string password))

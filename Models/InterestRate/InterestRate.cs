@@ -1,6 +1,6 @@
 namespace Models
 {
-    public class InterestRate : InterestMechanism
+    public class InterestRate : IInterestMechanism
     {
         private double _value { get; }
         private int _period { get; } // in months

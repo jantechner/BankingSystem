@@ -19,7 +19,11 @@ namespace Models
             set => account.Balance = value;
         }
 
-        public override InterestMechanism InterestRate 
+        public override void Accept(Report report)
+        {
+        }
+
+        public override IInterestMechanism InterestRate 
         { 
             get => account.InterestRate;
             set => account.InterestRate = value;
