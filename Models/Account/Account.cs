@@ -7,42 +7,41 @@ namespace Models
 {
     public abstract class Account
     {
-        public Bank Bank { get; }
-        private readonly int _id;
-        private readonly Customer _owner;
-        public DateTime OpeningDate { get; } = DateTime.Now;
-        public Currency Currency { get; }
-        public double Balance { get; set; }
-        public string Number { get; }
-
+        protected Bank bank;
+        protected int id;
+        protected Customer owner;
+        private readonly DateTime _openingDate = DateTime.Now;
+        protected Currency currency;
+        protected string number;
+        protected InterestRate interestRate;
+        protected double balance;
+        protected IList<Loan> loans = new LoansStore();
+        protected List<Operation> history = new List<Operation>();
+        
         // private IList Deposits = new DepositsStore();    // nie jestem pewien jak to ma wyglądać
+        public abstract double Balance { get; set; }
+        public abstract IList<Loan> Loans { get; }
+        public abstract List<Operation> History { get; }
+        public abstract Bank Bank { get; }
+        public abstract Currency Currency { get; }
+        public abstract string Number { get; }
+        public abstract InterestRate InterestRate { get; }
 
-        public IList<Loan> Loans { get; } = new LoansStore();
-        public InterestMechanism InterestRate { get; set; } // jak użyć stopy procentowej w koncie???
-        public List<Operation> History { get; } = new List<Operation>();
+        public abstract void DecreaseBalance(double amount);
 
-        protected Account(Bank bank, int accountId, Customer customer, string number, InterestMechanism interestRate,
-            Currency currency = Currency.PL)
-        {
-            Bank = bank;
-            _id = accountId;
-            _owner = customer;
-            Currency = currency;
-            Number = number;
-            InterestRate = interestRate;
-        }
+        public abstract void IncreaseBalance(double amount);
 
         public override string ToString()
         {
-            return $"ID: {_id}\n" +
-                   $"Owner: {_owner}\n" +
-                   $"Number: {Number}\n" +
-                   $"Opening date: {OpeningDate}\n" +
-                   $"Currency: {Currency}\n" +
-                   $"Balance: {Balance}\n" +
-                   $"InterestRate: {InterestRate}\n" +
-                   $"Loans: {Loans}\n" +
-                   $"History: {History}";
+            return $"ID: {id}\n" +
+                   $"Owner: {owner}\n" +
+                   $"Number: {number}\n" +
+                   $"Opening date: {_openingDate}\n" +
+                   $"Currency: {currency}\n" +
+                   $"Balance: {balance}\n" +
+                   $"InterestRate: {interestRate}\n" +
+                   $"Loans: {loans}\n" +
+                   $"History: {history}";
         }
 
         public double CalcInterest()
