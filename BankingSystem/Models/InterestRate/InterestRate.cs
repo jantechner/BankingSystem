@@ -1,3 +1,5 @@
+using System;
+
 namespace Models
 {
     public class InterestRate : IInterestMechanism
@@ -13,10 +15,16 @@ namespace Models
             _capitalizationPeriod = capitalizationPeriod;
         }
 
-        public double Calculate(double balance)
+        public double Calculate(BankingProduct product)
         {
-            //TODO more sophisticated calculations 
-            return balance * _value;
+            var interest = product switch
+            {
+                Account account => account.Balance * _value,
+                Deposit deposit => deposit.Amount * _value,
+                Loan loan => loan.Amount * _value,
+                _ => 0
+            };
+            return interest;
         }
 
         public override string ToString()

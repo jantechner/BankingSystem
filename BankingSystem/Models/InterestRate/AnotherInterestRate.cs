@@ -9,10 +9,15 @@ namespace Models
             _value = value;
         }
 
-        public double Calculate(double balance)
+        public double Calculate(BankingProduct product)
         {
-            //TODO more sophisticated calculations
-            return balance * _value;
+            return product switch
+            {
+                Account account => account.Balance * _value,
+                Deposit deposit => deposit.Amount * _value,
+                Loan loan => loan.Amount * _value,
+                _ => 0
+            };
         }
         
         public override string ToString()

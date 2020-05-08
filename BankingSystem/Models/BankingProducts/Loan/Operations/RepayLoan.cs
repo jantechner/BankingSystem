@@ -2,13 +2,11 @@ namespace Models
 {
     public class RepayLoan : Operation
     {
-        private readonly Account _account;
         private readonly Loan _loan;
         private readonly int _amount;
 
-        public RepayLoan(Account account, Loan loan, int amount)
+        public RepayLoan(Loan loan, int amount)
         {
-            _account = account;
             _loan = loan;
             _amount = amount;
             Description = "Repaying a loan, amount: " + amount;
@@ -16,8 +14,12 @@ namespace Models
 
         public override bool Execute()
         {
-            _account.History.Add(this);
-            _loan.RemainingAmount -= _amount;
+            _loan.Account.DecreaseBalance(_amount);
+            _loan.Amount -= _amount;
+            Description += $", Balance after: {_loan.Account.Balance}";
+
+            _loan.Account.History.Add(this);
+            _loan.History.Add(this);
             return true;
         }
     }

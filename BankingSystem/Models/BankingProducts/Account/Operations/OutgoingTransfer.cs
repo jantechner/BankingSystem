@@ -8,7 +8,7 @@ namespace Models
         {
             FromAccount = account;
             FromAccount.History.Add(this);
-            Description = $"Outgoing transfer to account {TargetAccountNumber} for {amount}";
+            Description = $"Outgoing transfer to account {TargetAccountNumber}, amount: {amount}";
         }
 
         public override bool Execute()

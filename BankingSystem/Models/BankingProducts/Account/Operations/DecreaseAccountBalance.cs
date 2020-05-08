@@ -18,6 +18,7 @@ namespace Models
         {
             _account.History.Add(this);
             _account.DecreaseBalance(_amount);
+            Description += $", Balance after: {_account.Balance}";
             return true;
         }
     }

@@ -16,8 +16,12 @@ namespace Models
 
         public override bool Execute()
         {
+            var loan = new Loan(_account, _amount, _interestRate);
+            _account.IncreaseBalance(_amount);
+            Description += $", Balance after: {_account.Balance}";
+            _account.Loans.Add(loan);
             _account.History.Add(this);
-            _account.Loans.Add(new Loan(_account, _amount, _interestRate));
+            loan.History.Add(this);
             return true;
         }
     }

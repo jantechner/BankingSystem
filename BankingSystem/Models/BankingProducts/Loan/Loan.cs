@@ -1,31 +1,34 @@
+using System.Collections.Generic;
+
 namespace Models
 {
-    public class Loan : IBankingProduct
+    public class Loan : BankingProduct
     {
         public Account Account { get; }
-        public double RemainingAmount { get; set; }
-        public IInterestMechanism InterestRate { get; }
-        
+        public double Amount { get; set; }
+        public sealed override IInterestMechanism InterestRate { get; set; }
+        public override List<Operation> History { get; } = new List<Operation>();
+
         //TODO obliczanie rzeczywistej wysokości pożyczki uwzględniając stopy procentowe
 
         public Loan(Account account, double amount, IInterestMechanism interestRate)
         {
             Account = account;
-            RemainingAmount = amount;
+            Amount = amount;
             InterestRate = interestRate;
         }
 
         public void RepayLoan(double amount)
         {
-            RemainingAmount -= amount;
+            Amount -= amount;
         }
 
         public override string ToString()
         {
-            return $"Loan: {RemainingAmount}, InterestRate: {InterestRate}\n";
+            return $"Loan: {Amount}, InterestRate: {InterestRate}\n";
         }
 
-        public void Accept(Report report)
+        public override void Accept(Report report)
         {
             report.Create(this);
         }

@@ -4,19 +4,31 @@ namespace Models
 {
     public class CalculateInterest : Operation
     {
-        private Account _account;
+        private readonly BankingProduct _product;
 
-        public CalculateInterest(Account account)
+        public CalculateInterest(BankingProduct product)
         {
-            _account = account;
+            _product = product;
             Description = "Calculate interest rate";
         }
 
         public override bool Execute()
         {
-            _account.History.Add(this);
-            var interest = _account.InterestRate.Calculate(_account.Balance);
-            Console.WriteLine(interest);
+            _product.History.Add(this);
+            var interest = _product.InterestRate.Calculate(_product);
+
+            switch (_product)
+            {
+                case Account account:
+                    account.Balance += interest;
+                    break;
+                case Deposit deposit:
+                    deposit.Amount += interest;
+                    break;
+                case Loan loan:
+                    loan.Amount += interest;
+                    break;
+            }
             return true;
         }
     }

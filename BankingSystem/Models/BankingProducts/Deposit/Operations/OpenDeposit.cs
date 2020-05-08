@@ -1,3 +1,5 @@
+using System;
+
 namespace Models
 {
     public class OpenDeposit : Operation
@@ -16,10 +18,15 @@ namespace Models
 
         public override bool Execute()
         {
+            if (_account.Balance < _amount) throw new Exception("Account balance too small to open this deposit");
+            var deposit = new Deposit(_account, _amount, _interestRate);
+            _account.DecreaseBalance(_amount);
+            _account.Deposits.Add(deposit);
+            Description += $", Balance after: {_account.Balance}";
             _account.History.Add(this);
-            _account.Deposits.Add(new Deposit(_account, _amount, _interestRate));
+            deposit.History.Add(this);
+
             return true;
         }
-        
     }
 }

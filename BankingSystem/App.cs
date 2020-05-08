@@ -29,20 +29,16 @@ namespace BankingSystem
             customer1.RequestLoan(account1, 10000, globalBank);
             customer1.RepayLoan(account1, account1.Loans[0], 100, globalBank);
 
-            customer1.OpenDeposit(account1, 10000);
+            customer1.OpenDeposit(account1, 5000);
+            customer1.CloseDeposit(account1.Deposits[0]);
 
             globalBank.Execute(new OutgoingTransfer(account1, "97021500531", 200));
             // account1.OutgoingTransfer("97021500531", 200);
 
             InterBankPaymentManager.ExecuteTransfers();
 
-            Console.WriteLine(account1);
-            Console.WriteLine(account2);
-
-            foreach (var loan in account1.Loans)
-            {
-                Console.WriteLine(loan);
-            }
+            // Console.WriteLine(account1);
+            // Console.WriteLine(account2);
 
             globalBank.Execute(new CalculateInterest(account1));
             globalBank.Execute(new ChangeInterestRate(account1, new AnotherInterestRate(0.01)));

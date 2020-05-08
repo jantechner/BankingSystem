@@ -45,13 +45,19 @@ namespace Models
 
         public bool RepayLoan(Account account, Loan loan, int amount, Bank bank)
         {
-            return Banks.Contains(bank) && bank.Execute(new RepayLoan(account, loan, amount));
+            return Banks.Contains(bank) && bank.Execute(new RepayLoan(loan, amount));
         }
 
         public bool OpenDeposit(Account account, double amount)
         {
             return Banks.Contains(account.Bank) &&
                    account.Bank.Execute(new OpenDeposit(account, amount, new InterestRate(0.2, 24, 6)));
+        }
+
+        public bool CloseDeposit(Deposit deposit)
+        {
+            return Banks.Contains(deposit.Account.Bank) &&
+                   deposit.Account.Bank.Execute(new CloseDeposit(deposit));
         }
 
         public override string ToString()

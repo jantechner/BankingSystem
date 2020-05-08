@@ -15,7 +15,7 @@ namespace Models
 
         public void Create(Loan loan)
         {
-            Content.Add("\t\tLoan - remaining amount: " + loan.RemainingAmount);
+            Content.Add("\t\tLoan - remaining amount: " + loan.Amount);
         }
 
         public void Create(Deposit deposit)
