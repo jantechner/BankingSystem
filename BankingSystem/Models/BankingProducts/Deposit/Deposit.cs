@@ -1,6 +1,6 @@
 namespace Models
 {
-    public class Deposit : BankingProduct
+    public class Deposit : IBankingProduct
     {
         public Account Account { get; }
         public double Amount { get; }
@@ -13,7 +13,7 @@ namespace Models
             InterestRate = interestRate;
         }
 
-        public override void Accept(Report report)
+        public void Accept(Report report)
         {
             report.Create(this);
         }

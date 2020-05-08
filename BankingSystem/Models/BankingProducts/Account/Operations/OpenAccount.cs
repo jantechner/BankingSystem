@@ -4,15 +4,14 @@ namespace Models
 {
     public class OpenAccount<T> : Operation
     {
-        private Bank _bank;
-        private Customer _customer;
-        private Type _accountType;
+        private readonly Bank _bank;
+        private readonly Customer _customer;
 
         public OpenAccount(Customer customer, Bank bank)
         {
             _bank = bank;
             _customer = customer;
-            _accountType = typeof(T);
+            Description = $"Opening new {typeof(T).Name} for {customer.Name} {customer.Surname}";
         }
 
         public override bool Execute()
@@ -33,9 +32,9 @@ namespace Models
             {
                 throw new Exception("incorrect ");
             }
-            _bank.AddNewAccount(_customer, newAccount);
 
-            Console.WriteLine($"Opening account for {_customer}");
+            _bank.AddNewAccount(_customer, newAccount);
+            newAccount.History.Add(this);
             return true;
         }
     }

@@ -8,18 +8,18 @@ namespace Models
         {
             FromAccount = account;
             FromAccount.History.Add(this);
-            Description = $"Outgoing transfer to account {TargetAccountNumber} for {Amount} {FromAccount.Currency}";
+            Description = $"Outgoing transfer to account {TargetAccountNumber} for {amount}";
         }
 
         public override bool Execute()
         {
             var bank = FromAccount.Bank;
             bank.Execute(new DecreaseBalance(FromAccount, Amount));
-            _status = Status.Forwarded;
+            Status = TransferStatus.Forwarded;
             if (bank.HasAccount(TargetAccountNumber, out var targetAccount))
             {
                 bank.Execute(new IncomingTransfer(SenderAccountNumber, targetAccount, Amount));
-                _status = Status.Executed;
+                Status = TransferStatus.Executed;
             }
             else
             {
@@ -29,16 +29,9 @@ namespace Models
             return true;
         }
 
-        public void Confirm()
+        public override string ToString()
         {
-            _status = Status.Executed;
-            Description += " - Confirmed";
-        }
-
-        public void Reject()
-        {
-            _status = Status.Rejected;
-            Description += " - Rejected";
+            return $"{Description} - {Status} ({Date})";
         }
     }
 }

@@ -8,13 +8,13 @@ namespace Models
         {
             _toAccount = account;
             _toAccount.History.Add(this);
-            Description = $"Incoming transfer from account {from} for {amount}";
+            Description = $"Incoming transfer from account {from}, amount: {amount}";
         }
 
         public override bool Execute()
         {
             _toAccount.Bank.Execute(new IncreaseBalance(_toAccount, Amount));
-            _status = Status.Executed;
+            Status = TransferStatus.Executed;
             return true;
         }
     }

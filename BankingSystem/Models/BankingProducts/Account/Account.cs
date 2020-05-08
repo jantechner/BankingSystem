@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Models
 {
-    public abstract class Account : BankingProduct
+    public abstract class Account : IBankingProduct
     {
         private static int _accountCounter = 0;
 
@@ -32,9 +32,7 @@ namespace Models
         
         public abstract void DecreaseBalance(double amount);
 
-        public override void Accept(Report report)
-        {
-        }
+        public abstract void Accept(Report report);
 
         public override string ToString()
         {

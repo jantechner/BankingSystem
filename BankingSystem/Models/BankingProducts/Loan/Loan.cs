@@ -1,6 +1,6 @@
 namespace Models
 {
-    public class Loan : BankingProduct
+    public class Loan : IBankingProduct
     {
         public Account Account { get; }
         public double RemainingAmount { get; set; }
@@ -25,7 +25,7 @@ namespace Models
             return $"Loan: {RemainingAmount}, InterestRate: {InterestRate}\n";
         }
 
-        public override void Accept(Report report)
+        public void Accept(Report report)
         {
             report.Create(this);
         }

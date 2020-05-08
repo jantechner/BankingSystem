@@ -32,7 +32,7 @@ namespace Models
         {
             account.Bank.Execute(new DecreaseBalance(account, amount));
         }
-        
+
         public void DepositMoney(Account account, double amount)
         {
             account.Bank.Execute(new IncreaseBalance(account, amount));
@@ -40,7 +40,7 @@ namespace Models
 
         public bool RequestLoan(Account account, double amount, Bank bank)
         {
-            return Banks.Contains(bank) && bank.Execute(new RaiseLoan(account, amount));
+            return Banks.Contains(bank) && bank.Execute(new RaiseLoan(account, amount, new InterestRate(0.2, 24, 6)));
         }
 
         public bool RepayLoan(Account account, Loan loan, int amount, Bank bank)
@@ -50,7 +50,8 @@ namespace Models
 
         public bool OpenDeposit(Account account, double amount)
         {
-            return Banks.Contains(account.Bank) && account.Bank.Execute(new OpenDeposit(account, amount));
+            return Banks.Contains(account.Bank) &&
+                   account.Bank.Execute(new OpenDeposit(account, amount, new InterestRate(0.2, 24, 6)));
         }
 
         public override string ToString()

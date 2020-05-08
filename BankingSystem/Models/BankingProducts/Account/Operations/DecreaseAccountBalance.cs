@@ -4,8 +4,8 @@ namespace Models
 {
     public class DecreaseBalance : Operation
     {
-        private double _amount;
-        private Account _account;
+        private readonly double _amount;
+        private readonly Account _account;
 
         public DecreaseBalance(Account account, double amount)
         {

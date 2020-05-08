@@ -10,7 +10,6 @@ namespace Models
         private static List<OutgoingTransfer> _queuedTransfers = new List<OutgoingTransfer>();
         private static List<Bank> _registeredBanks = new List<Bank>();
 
-        //TODO sortowanie transferów
         public static void OrderToTransfer(OutgoingTransfer transfer)
         {
             _queuedTransfers.Add(transfer);
@@ -33,12 +32,12 @@ namespace Models
             {
                 Console.WriteLine("Cannot make a transfer to given account - target account does not exist");
                 transfer.FromAccount.Bank.Execute(new IncreaseBalance(transfer.FromAccount, transfer.Amount));
-                transfer.Reject();
+                transfer.Status = TransferStatus.Rejected;
             }
             else
             {
                 targetBank.Execute(new IncomingTransfer(transfer.SenderAccountNumber, targetAccount, transfer.Amount));
-                transfer.Confirm();
+                transfer.Status = TransferStatus.Executed;
             }
         }
 
