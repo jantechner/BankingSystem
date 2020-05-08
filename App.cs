@@ -30,7 +30,7 @@ namespace BankingSystem
             customer1.RequestLoan(account1, 10000, globalBank);
             customer1.RepayLoan(account1, account1.Loans[0], 100, globalBank);
 
-            globalBank.Execute(new Transfer(account1, "97021500531", 200));
+            globalBank.Execute(new OutgoingTransfer(account1, "97021500531", 200));
             // account1.OutgoingTransfer("97021500531", 200);
 
             InterBankPaymentManager.ExecuteTransfers();
@@ -48,6 +48,7 @@ namespace BankingSystem
             globalBank.Execute(new CalculateInterest(account1));
 
             Console.WriteLine(globalBank.Generate(new AccountsReport()).ToString());
+            Console.WriteLine(millenium.Generate(new AccountsReport()).ToString());
             
         }
     }

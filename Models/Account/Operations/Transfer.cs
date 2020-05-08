@@ -2,62 +2,31 @@ using System;
 
 namespace Models
 {
-    public class Transfer : Operation
+    public abstract class Transfer : Operation
     {
-        public enum Status
+        protected enum Status
         {
             Created,
             Forwarded,
-            Executed
+            Executed,
+            Rejected
         }
 
-        private readonly Account _fromAccount;
-        private Account _toAccount;
-        private readonly string _toNumber;
-        private readonly double _amount;
-        private Status _status;
+        public string TargetAccountNumber { get; }
+        public string SenderAccountNumber { get; }
+        public double Amount { get; }
+        protected Status _status;
 
-        public Transfer(Account from, String to, double amount)
+        protected Transfer(string from, string to, double amount)
         {
-            _fromAccount = from;
-            _toNumber = to;
+            TargetAccountNumber = to;
+            SenderAccountNumber = from;
+            Amount = amount;
             _status = Status.Created;
-            _amount = amount;
         }
 
-        public void SetTargetAccount(Account account)
-        {
-            _toAccount = account;
-        }
-
-        public string GetTargetNumber()
-        {
-            return _toNumber;
-        }
-
-        public override bool Execute()
-        {
-            if (_status == Status.Created)
-            {
-                _fromAccount.Bank.Execute(new DecreaseBalance(_fromAccount, _amount));
-                _status = Status.Forwarded;
-                if (_fromAccount.Bank.HasAccount(_toNumber, out _toAccount))
-                {
-                    _status = Status.Executed;
-                    _fromAccount.Bank.Execute(new IncreaseBalance(_toAccount, _amount));
-                }
-                else
-                {
-                    InterBankPaymentManager.OrderToTransfer(this);
-                }
-            }
-            else
-            {
-                _status = Status.Executed;
-                _toAccount.Bank.Execute(new IncreaseBalance(_toAccount, _amount));
-            }
-
-            return true;
-        }
+        public abstract override bool Execute();
+        
+        
     }
 }

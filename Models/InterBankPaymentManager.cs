@@ -7,11 +7,11 @@ namespace Models
 {
     public class InterBankPaymentManager
     {
-        private static List<Transfer> _queuedTransfers = new List<Transfer>();
+        private static List<OutgoingTransfer> _queuedTransfers = new List<OutgoingTransfer>();
         private static List<Bank> _registeredBanks = new List<Bank>();
 
         //TODO sortowanie transferów
-        public static void OrderToTransfer(Transfer transfer)
+        public static void OrderToTransfer(OutgoingTransfer transfer)
         {
             _queuedTransfers.Add(transfer);
         }
@@ -24,15 +24,22 @@ namespace Models
             }
         }
 
-        private static void ExecuteTransfer(Transfer transfer)
+        private static void ExecuteTransfer(OutgoingTransfer transfer)
         {
             Account targetAccount = null;
             var targetBank = _registeredBanks.FirstOrDefault(bank =>
-                bank.HasAccount(transfer.GetTargetNumber(), out targetAccount));
+                bank.HasAccount(transfer.TargetAccountNumber, out targetAccount));
             if (targetBank == null)
-                throw new Exception("Cannot find bank to make transfer to");
-            transfer.SetTargetAccount(targetAccount);
-            targetBank.Execute(transfer);
+            {
+                Console.WriteLine("Cannot make a transfer to given account - target account does not exist");
+                transfer.FromAccount.Bank.Execute(new IncreaseBalance(transfer.FromAccount, transfer.Amount));
+                transfer.Reject();
+            }
+            else
+            {
+                targetBank.Execute(new IncomingTransfer(transfer.SenderAccountNumber, targetAccount, transfer.Amount));
+                transfer.Confirm();
+            }
         }
 
         public static void RegisterBank(Bank bank)
