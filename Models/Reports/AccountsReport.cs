@@ -14,15 +14,23 @@ namespace Models
         public override void Create(PlainAccount account)
         {
             Content.AddRange(new List<string> {"Account:", "\tNumber " + account.Number});
-            foreach (var loan in account.Loans)
-            {
-                loan.Accept(this);
-            }
+            AddAccountDetails(account);
         }
 
         public override void Create(DebitAccount account)
         {
             Content.AddRange(new List<string> {"Debit account:", "\tNumber " + account.Number});
+            AddAccountDetails(account);
+        }
+
+        public override void Create(Operation operation)
+        {
+            Content.Add("\t\t" + operation);
+        }
+
+        private void AddAccountDetails(Account account)
+        {
+            Content.Add("\tLoans");
             foreach (var loan in account.Loans)
             {
                 loan.Accept(this);
@@ -32,11 +40,6 @@ namespace Models
             {
                 operation.Accept(this);
             }
-        }
-
-        public override void Create(Operation operation)
-        {
-            Content.Add("\t\t" + operation);
         }
     }
 }
