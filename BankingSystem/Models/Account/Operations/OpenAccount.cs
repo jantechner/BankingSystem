@@ -20,12 +20,12 @@ namespace Models
             Account newAccount;
             if (typeof(T) == typeof(PlainAccount))
             {
-                newAccount = new PlainAccount(_bank, Bank.NextAccountId(), _customer, _customer.Pesel,
+                newAccount = new PlainAccount(_bank, Account.NextAccountId(), _customer, _customer.Pesel,
                     new InterestRate(0.05, 24, 6));
             }
             else if (typeof(T) == typeof(DebitAccount))
             {
-                var account = new PlainAccount(_bank, Bank.NextAccountId(), _customer, _customer.Pesel,
+                var account = new PlainAccount(_bank, Account.NextAccountId(), _customer, _customer.Pesel,
                     new InterestRate(0.05, 24, 6));
                 newAccount = new DebitAccount(account);
             }

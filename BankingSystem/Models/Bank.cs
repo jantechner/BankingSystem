@@ -9,32 +9,23 @@ namespace Models
 {
     public class Bank
     {
-        private static int _accountCounter = 0;
-
         public string Name { get; }
         public string CountryCode { get; }
-        public string SWIFT { get; }
-        private IDictionary<Customer, Account> _accounts = new AccountsStore();
-        public IEnumerable InterestRates { get; } // co to ma robić?
-        public IList<Operation> _history = new OperationsHistory();
-
-        //TODO zaimplementować ReportingManagera
+        public string Swift { get; }
+        private readonly IDictionary<Customer, Account> _accounts = new AccountsStore();
+        public IList<Operation> History { get; } = new List<Operation>();
+        
         public Bank(string name, string countryCode, string swift)
         {
             Name = name;
             CountryCode = countryCode;
-            SWIFT = swift;
+            Swift = swift;
         }
 
         public bool Execute(Operation operation)
         {
-            _history.Add(operation);
+            History.Add(operation);
             return operation.Execute();
-        }
-
-        public static int NextAccountId()
-        {
-            return _accountCounter++;
         }
 
         public bool HasAccount(string accountNumber, out Account account)

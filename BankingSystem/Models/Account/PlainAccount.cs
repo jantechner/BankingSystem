@@ -23,6 +23,7 @@ namespace Models
         }
 
         public override IList<Loan> Loans => loans;
+        public override IList<Deposit> Deposits => deposits;
         public override List<Operation> History => history;
         public override IInterestMechanism InterestRate 
         { 

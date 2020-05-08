@@ -11,6 +11,7 @@ namespace Models
         public override Currency Currency => account.Currency;
         public override string Number => account.Number;
         public override IList<Loan> Loans => account.Loans;
+        public override IList<Deposit> Deposits => account.Deposits;
         public override List<Operation> History => account.History;
 
         public override double Balance

@@ -1,22 +1,23 @@
 namespace Models
 {
-    public class RaiseLoan : Operation
+    public class OpenDeposit : Operation
     {
         private Account _account;
         private double _amount;
 
-        public RaiseLoan(Account account, double amount)
+        public OpenDeposit(Account account, double amount)
         {
             _account = account;
             _amount = amount;
-            Description = "Raising a loan for " + amount;
+            Description = "Opening a deposit for " + amount;
         }
 
         public override bool Execute()
         {
             _account.History.Add(this);
-            _account.Loans.Add(new Loan(_amount, new InterestRate(0.1, 24, 12)));
+            _account.Deposits.Add(new Deposit(_amount, new InterestRate(0.03, 36, 12)));
             return true;
         }
+        
     }
 }

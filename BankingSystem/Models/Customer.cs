@@ -10,7 +10,7 @@ namespace Models
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Pesel { get; }
-        public IList Banks { get; } = new List<Bank>();
+        public IList<Bank> Banks { get; } = new List<Bank>();
 
         public Customer(string pesel)
         {
@@ -20,19 +20,12 @@ namespace Models
         public void Open<T>(Bank bank) where T : Account
         {
             bank.Execute(new OpenAccount<T>(this, bank));
-            // bank.Open<T>(this);
             Banks.Add(bank);
         }
 
         public List<Account> GetAccounts()
         {
-            var accounts = new List<Account>();
-            foreach (Bank bank in Banks)
-            {
-                accounts.Add(bank.GetCustomerAccount(this));
-            }
-
-            return accounts;
+            return (from Bank bank in Banks select bank.GetCustomerAccount(this)).ToList();
         }
 
         public void WithdrawMoney(Account account, double amount)
@@ -45,7 +38,7 @@ namespace Models
             account.Bank.Execute(new IncreaseBalance(account, amount));
         }
 
-        public bool RequestLoan(Account account, int amount, Bank bank)
+        public bool RequestLoan(Account account, double amount, Bank bank)
         {
             return Banks.Contains(bank) && bank.Execute(new RaiseLoan(account, amount));
         }
@@ -55,13 +48,10 @@ namespace Models
             return Banks.Contains(bank) && bank.Execute(new RepayLoan(account, loan, amount));
         }
 
-        // public void innerBankTransfer(Bank bank, string from, string to, double amount)
-        // {
-        //     if (!accounts.TryGetValue((bank, from), out string password))
-        //         throw new SystemException("You don't have such account");
-        //
-        //     bank.innerBankTransfer(from, to, amount, password);
-        // }
+        public bool OpenDeposit(Account account, double amount)
+        {
+            return Banks.Contains(account.Bank) && account.Bank.Execute(new OpenDeposit(account, amount));
+        }
 
         public override string ToString()
         {

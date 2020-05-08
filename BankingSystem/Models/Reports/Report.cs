@@ -18,6 +18,11 @@ namespace Models
             Content.Add("\t\tLoan - remaining amount: " + loan.RemainingAmount);
         }
 
+        public void Create(Deposit deposit)
+        {
+            Content.Add($"\t\tDeposit - amount: {deposit.Amount}, interest rate: {deposit.InterestRate}");
+        }
+
         public abstract void Create(Operation operation);
 
         public override string ToString()

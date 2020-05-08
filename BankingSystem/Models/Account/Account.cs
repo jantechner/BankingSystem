@@ -8,6 +8,8 @@ namespace Models
 {
     public abstract class Account : IReportable
     {
+        private static int _accountCounter = 0;
+
         protected Bank bank;
         protected int id;
         protected Customer owner;
@@ -17,11 +19,13 @@ namespace Models
         protected IInterestMechanism interestRate;
         protected double balance;
         protected IList<Loan> loans = new LoansStore();
+        protected IList<Deposit> deposits = new List<Deposit>();
         protected List<Operation> history = new List<Operation>();
-        
+
         // private IList Deposits = new DepositsStore();    // nie jestem pewien jak to ma wyglądać
         public abstract double Balance { get; set; }
         public abstract IList<Loan> Loans { get; }
+        public abstract IList<Deposit> Deposits { get; }
         public abstract List<Operation> History { get; }
         public abstract Bank Bank { get; }
         public abstract Currency Currency { get; }
@@ -45,6 +49,11 @@ namespace Models
                    $"InterestRate: {interestRate}\n" +
                    $"Loans: {loans}\n" +
                    $"History: {history}";
+        }
+
+        public static int NextAccountId()
+        {
+            return _accountCounter++;
         }
     }
 }

@@ -35,6 +35,11 @@ namespace Models
             {
                 loan.Accept(this);
             }
+            Content.Add("\tDeposits");
+            foreach (var deposit in account.Deposits)
+            {
+                deposit.Accept(this);
+            }
             Content.Add("\tOperations");
             foreach (var operation in account.History)
             {

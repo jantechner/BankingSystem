@@ -3,11 +3,11 @@ namespace Models
     public class Loan : IReportable
     {
         public double RemainingAmount { get; set; }
-        public InterestRate InterestRate { get; }
+        public IInterestMechanism InterestRate { get; }
         
         //TODO obliczanie rzeczywistej wysokości pożyczki uwzględniając stopy procentowe
 
-        public Loan(double remainingAmount, InterestRate interestRate)
+        public Loan(double remainingAmount, IInterestMechanism interestRate)
         {
             RemainingAmount = remainingAmount;
             InterestRate = interestRate;
