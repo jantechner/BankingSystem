@@ -1,54 +1,50 @@
-using System;
 using System.Collections.Generic;
 
 namespace Models
 {
     public class AccountDecorator : Account
     {
-        protected Account account;
-
-        public override Bank Bank => account.Bank;
-        public override Currency Currency => account.Currency;
-        public override string Number => account.Number;
-        public override IList<Loan> Loans => account.Loans;
-        public override IList<Deposit> Deposits => account.Deposits;
-        public override List<Operation> History => account.History;
-
-        public override double Balance
+        protected readonly Account Account;
+        
+        protected AccountDecorator(Account account)
         {
-            get => account.Balance;
-            set => account.Balance = value;
+            Account = account;
         }
 
+        public override Bank Bank => Account.Bank;
+        public override string Number => Account.Number;
+        public override Currency Currency => Account.Currency;
+        public override IInterestMechanism InterestRate 
+        { 
+            get => Account.InterestRate;
+            set => Account.InterestRate = value;
+        }
+        public override double Balance
+        {
+            get => Account.Balance;
+            set => Account.Balance = value;
+        }
+        public override IList<Loan> Loans => Account.Loans;
+        public override IList<Deposit> Deposits => Account.Deposits;
+        public override List<Operation> History => Account.History;
+
+        public override void IncreaseBalance(double amount)
+        {
+            Account.IncreaseBalance(amount);
+        }
+        
+        public override void DecreaseBalance(double amount)
+        {
+            Account.DecreaseBalance(amount);
+        }
+        
         public override void Accept(Report report)
         {
         }
 
-        public override IInterestMechanism InterestRate 
-        { 
-            get => account.InterestRate;
-            set => account.InterestRate = value;
-        }
-
-        protected AccountDecorator(Account account)
-        {
-            this.account = account;
-            Console.WriteLine("INTEREST RATE" + account.InterestRate);
-        }
-
-        public override void DecreaseBalance(double amount)
-        {
-            account.DecreaseBalance(amount);
-        }
-
-        public override void IncreaseBalance(double amount)
-        {
-            account.IncreaseBalance(amount);
-        }
-
         public override string ToString()
         {
-            return account.ToString();
+            return Account.ToString();
         }
     }
 }

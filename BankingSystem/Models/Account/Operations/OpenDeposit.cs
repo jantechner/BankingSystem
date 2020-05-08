@@ -15,7 +15,7 @@ namespace Models
         public override bool Execute()
         {
             _account.History.Add(this);
-            _account.Deposits.Add(new Deposit(_amount, new InterestRate(0.03, 36, 12)));
+            _account.Deposits.Add(new Deposit(_account, _amount, new InterestRate(0.03, 36, 12)));
             return true;
         }
         

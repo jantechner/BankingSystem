@@ -12,17 +12,17 @@ namespace Models
 
         public override void DecreaseBalance(double amount)
         {
-            account.Balance -= amount;
-            if (account.Balance >= 0) return;
-            _debit = _debit == 0.0 ? Math.Abs(account.Balance) : _debit + amount;
-            account.Balance = 0;
+            Account.Balance -= amount;
+            if (Account.Balance >= 0) return;
+            _debit = _debit == 0.0 ? Math.Abs(Account.Balance) : _debit + amount;
+            Account.Balance = 0;
         }
 
         public override void IncreaseBalance(double amount)
         {
             _debit -= amount;
             if (_debit >= 0) return;
-            account.Balance = account.Balance == 0.0 ? Math.Abs(_debit) : account.Balance + amount;
+            Account.Balance = Account.Balance == 0.0 ? Math.Abs(_debit) : Account.Balance + amount;
             _debit = 0;
         }
 

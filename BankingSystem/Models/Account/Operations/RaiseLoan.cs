@@ -15,7 +15,7 @@ namespace Models
         public override bool Execute()
         {
             _account.History.Add(this);
-            _account.Loans.Add(new Loan(_amount, new InterestRate(0.1, 24, 12)));
+            _account.Loans.Add(new Loan(_account, _amount, new InterestRate(0.1, 24, 12)));
             return true;
         }
     }

@@ -8,47 +8,35 @@ namespace Models
         public PlainAccount(Bank bank, int id, Customer customer, string number, IInterestMechanism interestRate,
             Currency currency = Currency.PL)
         {
-            this.bank = bank;
-            this.id = id;
-            owner = customer;
-            this.currency = currency;
-            this.number = number;
-            this.interestRate = interestRate;
+            this.Id = id;
+            Owner = customer;
+            Bank = bank;
+            Number = number;
+            InterestRate = interestRate;
+            Currency = currency;
         }
 
-        public override double Balance
+        public override Bank Bank { get; }
+        public override string Number { get; }
+        public override Currency Currency { get; }
+        public sealed override IInterestMechanism InterestRate { get; set; }
+        public override double Balance { get; set; }
+        public override IList<Loan> Loans { get; } = new List<Loan>();
+        public override IList<Deposit> Deposits { get; } = new List<Deposit>();
+        public override List<Operation> History { get; } = new List<Operation>();
+        
+        public override void IncreaseBalance(double amount)
         {
-            get => balance;
-            set => balance = value;
+            Balance += amount;
         }
-
-        public override IList<Loan> Loans => loans;
-        public override IList<Deposit> Deposits => deposits;
-        public override List<Operation> History => history;
-        public override IInterestMechanism InterestRate 
-        { 
-            get => interestRate;
-            set => interestRate = value;
-        }
-
-        public override void Accept(Report report)
-        {
-            report.Create(this);
-        }
-
-        public override Bank Bank => bank;
-        public override Currency Currency => currency;
-        public override string Number => number;
-
         public override void DecreaseBalance(double amount)
         {
             if (Balance < amount) throw new Exception("Not enough funds");
             Balance -= amount;
         }
-
-        public override void IncreaseBalance(double amount)
+        public override void Accept(Report report)
         {
-            Balance += amount;
+            report.Create(this);
         }
     }
 }
