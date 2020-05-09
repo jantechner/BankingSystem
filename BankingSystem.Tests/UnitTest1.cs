@@ -9,7 +9,7 @@ namespace BankingSystem.Tests
         [Fact]
         public void PlainAccount_IncreaseBalance()
         {
-            var account = new PlainAccount(null, 0, null, "", null);
+            var account = new RegularAccount(null, 0, null, "", null);
             account.IncreaseBalance(100);
             Assert.Equal(100, account.Balance);
         }
@@ -17,7 +17,7 @@ namespace BankingSystem.Tests
         [Fact]
         public void PlainAccount_DecreaseMoreThanHas()
         {
-            var account = new PlainAccount(null, 0, null, "", null);
+            var account = new RegularAccount(null, 0, null, "", null);
 
             var exception = Assert.Throws<Exception>(() => account.DecreaseBalance(100));
             Assert.Equal("Not enough funds", exception.Message);
@@ -31,11 +31,11 @@ namespace BankingSystem.Tests
             InterBankPaymentManager.RegisterBank(globalBank);
             var customer1 = new Customer("87040500342") {Name = "Jan", Surname = "Kowalski"};
             customer1.Open<DebitAccount>(globalBank);
-            var account1 = customer1.GetAccounts()[0];
+            var account1 = customer1.Get<Account>()[0];
             
             Console.WriteLine(customer1.RequestLoan(account1, 10000, globalBank));
 
-            Assert.Equal(10000, account1.Loans[0].RemainingAmount);
+            Assert.Equal(10000, account1.Loans[0].Amount);
         }
         
         
@@ -51,9 +51,9 @@ namespace BankingSystem.Tests
             var customer1 = new Customer("87040500342") {Name = "Jan", Surname = "Kowalski"};
             var customer2 = new Customer("97021500531") {Name = "Grzegorz", Surname = "Nowak"};
             customer1.Open<DebitAccount>(globalBank);
-            customer2.Open<PlainAccount>(millenium);
-            var account1 = customer1.GetAccounts()[0];
-            var account2 = customer2.GetAccounts()[0];
+            customer2.Open<RegularAccount>(millenium);
+            var account1 = customer1.Get<Account>()[0];
+            var account2 = customer2.Get<Account>()[0];
             globalBank.Execute(new IncreaseBalance(account1, 1000));
             globalBank.Execute(new OutgoingTransfer(account1, "97021500531", 200));
             InterBankPaymentManager.ExecuteTransfers();
