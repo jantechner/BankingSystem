@@ -11,6 +11,7 @@ namespace Models
             Account = account;
         }
 
+        public override Customer Owner => Account.Owner;
         public override Bank Bank => Account.Bank;
         public override string Number => Account.Number;
         public override Currency Currency => Account.Currency;

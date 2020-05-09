@@ -22,6 +22,7 @@ namespace Models
             var deposit = new Deposit(_account, _amount, _interestRate);
             _account.DecreaseBalance(_amount);
             _account.Deposits.Add(deposit);
+            _account.Bank.AddNewProduct(_account.Owner, deposit);
             Description += $", Balance after: {_account.Balance}";
             _account.History.Add(this);
             deposit.History.Add(this);

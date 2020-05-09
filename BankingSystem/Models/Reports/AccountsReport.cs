@@ -6,12 +6,13 @@ namespace Models
 {
     public class AccountsReport : Report
     {
+        private bool _isInsideAccount = false;
         public AccountsReport()
         {
             Content.Add("Accounts report:");
         }
 
-        public override void Create(PlainAccount account)
+        public override void Create(RegularAccount account)
         {
             Content.AddRange(new List<string> {"Account:", "\tNumber " + account.Number});
             AddAccountDetails(account);
@@ -22,6 +23,16 @@ namespace Models
             Content.AddRange(new List<string> {"Debit account:", "\tNumber " + account.Number});
             AddAccountDetails(account);
         }
+        
+        public override void Create(Loan loan)
+        {
+            if (_isInsideAccount) Content.Add("\t\tLoan - remaining amount: " + loan.Amount);
+        }
+
+        public override void Create(Deposit deposit)
+        {
+            if (_isInsideAccount) Content.Add($"\t\tDeposit - amount: {deposit.Amount}, interest rate: {deposit.InterestRate}");
+        }
 
         public override void Create(Operation operation)
         {
@@ -30,6 +41,7 @@ namespace Models
 
         private void AddAccountDetails(Account account)
         {
+            _isInsideAccount = true;
             Content.Add("\tLoans");
             foreach (var loan in account.Loans)
             {
@@ -45,6 +57,10 @@ namespace Models
             {
                 operation.Accept(this);
             }
+
+            _isInsideAccount = false;
         }
+        
+        
     }
 }

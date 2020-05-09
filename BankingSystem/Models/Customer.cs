@@ -23,9 +23,9 @@ namespace Models
             Banks.Add(bank);
         }
 
-        public List<Account> GetAccounts()
+        public List<T> Get<T>() where T : BankingProduct
         {
-            return (from Bank bank in Banks select bank.GetCustomerAccount(this)).ToList();
+            return Banks.SelectMany(bank => bank.GetCustomerProducts<T>(this)).ToList();
         }
 
         public void WithdrawMoney(Account account, double amount)

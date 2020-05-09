@@ -9,7 +9,7 @@ namespace BankingSystem.Tests
         [Fact]
         public void PlainAccount_IncreaseBalance()
         {
-            var account = new PlainAccount(null, 0, null, "", null);
+            var account = new RegularAccount(null, 0, null, "", null);
             account.IncreaseBalance(100);
             Assert.Equal(100, account.Balance);
         }

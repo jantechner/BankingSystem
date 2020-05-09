@@ -20,6 +20,7 @@ namespace Models
             _account.IncreaseBalance(_amount);
             Description += $", Balance after: {_account.Balance}";
             _account.Loans.Add(loan);
+            _account.Bank.AddNewProduct(_account.Owner, loan);
             _account.History.Add(this);
             loan.History.Add(this);
             return true;

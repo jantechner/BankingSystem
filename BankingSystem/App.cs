@@ -17,9 +17,9 @@ namespace BankingSystem
             var customer2 = new Customer("97021500531") {Name = "Grzegorz", Surname = "Nowak"};
             
             customer1.Open<DebitAccount>(globalBank);
-            customer2.Open<PlainAccount>(millenium);
-            var account1 = customer1.GetAccounts()[0];
-            var account2 = customer2.GetAccounts()[0];
+            customer2.Open<RegularAccount>(millenium);
+            var account1 = customer1.Get<Account>()[0];
+            var account2 = customer2.Get<Account>()[0];
             
             customer1.DepositMoney(account1, 1000);
             customer1.WithdrawMoney(account1, 500);
@@ -46,7 +46,9 @@ namespace BankingSystem
 
             Console.WriteLine(globalBank.Generate(new AccountsReport()).ToString());
             Console.WriteLine(millenium.Generate(new AccountsReport()).ToString());
-            
+            Console.WriteLine(globalBank.Generate(new ProductsReport()).ToString());
+            Console.WriteLine(millenium.Generate(new ProductsReport()).ToString());
+
         }
     }
 }

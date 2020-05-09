@@ -8,8 +8,8 @@ namespace Models
         private static int _accountCounter = 0;
 
         protected int Id;
-        protected Customer Owner;
         private readonly DateTime _openingDate = DateTime.Now;
+        public abstract Customer Owner { get; }
         public abstract Bank Bank { get; }
         public abstract string Number { get; }
         public abstract Currency Currency { get; }

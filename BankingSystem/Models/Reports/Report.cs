@@ -10,19 +10,10 @@ namespace Models
 
         protected List<string> Content { get; } = new List<string>();
 
-        public abstract void Create(PlainAccount account);
+        public abstract void Create(RegularAccount account);
         public abstract void Create(DebitAccount account);
-
-        public void Create(Loan loan)
-        {
-            Content.Add("\t\tLoan - remaining amount: " + loan.Amount);
-        }
-
-        public void Create(Deposit deposit)
-        {
-            Content.Add($"\t\tDeposit - amount: {deposit.Amount}, interest rate: {deposit.InterestRate}");
-        }
-
+        public abstract void Create(Loan loan);
+        public abstract void Create(Deposit deposit);
         public abstract void Create(Operation operation);
 
         public override string ToString()

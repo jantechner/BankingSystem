@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Models
 {
-    public class PlainAccount : Account
+    public class RegularAccount : Account
     {
-        public PlainAccount(Bank bank, int id, Customer customer, string number, IInterestMechanism interestRate,
+        public RegularAccount(Bank bank, int id, Customer customer, string number, IInterestMechanism interestRate,
             Currency currency = Currency.PL)
         {
             this.Id = id;
@@ -16,6 +16,7 @@ namespace Models
             Currency = currency;
         }
 
+        public override Customer Owner { get; }
         public override Bank Bank { get; }
         public override string Number { get; }
         public override Currency Currency { get; }
