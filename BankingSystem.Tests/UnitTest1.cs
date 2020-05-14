@@ -1,12 +1,68 @@
 using System;
 using Xunit;
 using Models;
+using System.Linq;
 
 namespace BankingSystem.Tests
 {
     public class PlainAccountTests
     {
         [Fact]
+        public void Bank_HasAccount()
+        {
+            var bank = new Bank("","",""); 
+            var customer = new Customer("");
+            customer.Open<RegularAccount>(bank);
+            Account account;
+            var accountNumber = customer.Get<Account>()[0].Number;
+            bank.HasAccount(accountNumber, out account);
+            Assert.True(customer.Get<Account>()[0] == account);
+        }
+
+        [Fact]
+        public void Bank_HasNoAccount()
+        {
+            var bank = new Bank("", "", "");
+            Account account;
+            Assert.False(bank.HasAccount("", out account));
+        }
+
+        [Fact]
+        public void Bank_NoRegularAccounts()
+        {
+            var bank = new Bank("", "", "");
+            var customer = new Customer("");
+            Assert.Empty(bank.GetCustomerProducts<DebitAccount>(customer));
+        }
+
+        [Fact]
+        public void Bank_GetCustomerProducts()
+        {
+            var bank = new Bank("", "", "");
+            var customer = new Customer("");
+            customer.Open<RegularAccount>(bank);
+            Assert.NotEmpty(bank.GetCustomerProducts<RegularAccount>(customer));
+        }
+
+        [Fact]
+        public void Bank_RegularButNoDebitAccounts()
+        {
+            var bank = new Bank("", "", "");
+            var customer = new Customer("");
+            customer.Open<RegularAccount>(bank);
+            Assert.Empty(bank.GetCustomerProducts<DebitAccount>(customer));
+        }
+
+        [Fact]
+        public void Bank_Generate()
+        {
+            var bank = new Bank("", "", "");
+            var report = new AccountsReport();
+            var newReport = bank.Generate(report);
+            Assert.NotNull(newReport);
+        }
+
+       [Fact]
         public void PlainAccount_IncreaseBalance()
         {
             var account = new RegularAccount(null, 0, null, "", null);
