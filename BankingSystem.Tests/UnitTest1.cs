@@ -62,6 +62,47 @@ namespace BankingSystem.Tests
             Assert.NotNull(newReport);
         }
 
+        [Fact]
+        public void Bank_Execute()
+        {
+            var bank = new Bank("", "", "");
+            var customer = new Customer("");
+            var operation = new OpenAccount<RegularAccount>(customer, bank);
+            Assert.True(bank.Execute(operation));
+        }
+
+        [Fact]
+        public void Customer_RegularAccount()
+        {
+            var bank = new Bank("", "", ""); 
+            var customer = new Customer("");
+            customer.Open<RegularAccount>(bank);
+            Assert.NotEmpty(customer.Get<RegularAccount>());
+        }
+
+        [Fact]
+        public void Customer_NoAccount()
+        {
+            var customer = new Customer("");
+            Assert.Empty(customer.Get<RegularAccount>());
+        }
+
+        [Fact]
+        public void Customer_RegularButNoDebitAccount()
+        {
+            var bank = new Bank("", "", "");
+            var customer = new Customer("");
+            customer.Open<RegularAccount>(bank);
+            Assert.Empty(customer.Get<DebitAccount>());
+        }
+
+        [Fact]
+        public void Customer_ToString()
+        {
+            var customer = new Customer("123") { Name = "Jan", Surname = "Kowalski" };
+            Assert.Equal("Customer: Jan Kowalski, pesel 123", customer.ToString());
+        }
+
        [Fact]
         public void PlainAccount_IncreaseBalance()
         {
