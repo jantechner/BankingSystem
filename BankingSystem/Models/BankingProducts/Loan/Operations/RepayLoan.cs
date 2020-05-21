@@ -3,9 +3,9 @@ namespace Models
     public class RepayLoan : Operation
     {
         private readonly Loan _loan;
-        private readonly int _amount;
+        private readonly double _amount;
 
-        public RepayLoan(Loan loan, int amount)
+        public RepayLoan(Loan loan, double amount)
         {
             _loan = loan;
             _amount = amount;
