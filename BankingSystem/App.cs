@@ -48,7 +48,7 @@ namespace BankingSystem
             Console.WriteLine(millenium.Generate(new AccountsReport()).ToString());
             Console.WriteLine(globalBank.Generate(new ProductsReport()).ToString());
             Console.WriteLine(millenium.Generate(new ProductsReport()).ToString());
-
+            Console.ReadKey();
         }
     }
 }

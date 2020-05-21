@@ -28,10 +28,12 @@ namespace Models
         
         public override void IncreaseBalance(double amount)
         {
+            if (amount < 0) throw new Exception("Negative amount");
             Balance += amount;
         }
         public override void DecreaseBalance(double amount)
         {
+            if (amount < 0) throw new Exception("Negative amount"); 
             if (Balance < amount) throw new Exception("Not enough funds");
             Balance -= amount;
         }
