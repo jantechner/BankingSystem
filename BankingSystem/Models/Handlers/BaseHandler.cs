@@ -13,16 +13,13 @@ namespace Models.Handlers
             return handler;
         }
 
-        public virtual void Handle(string requestType, Dictionary<string, object> requestData)
+        public virtual bool Handle(RequestType type, Dictionary<string, object> data)
         {
-            if (_nextHandler != null)
+            if (_nextHandler == null)
             {
-                _nextHandler?.Handle(requestType, requestData);
+                throw new NotSupportedException($"Operation '{type.ToString()}' is not supported");
             }
-            else
-            {
-                throw new NotSupportedException($"Operation '{requestType}' is not supported");
-            }
+            return _nextHandler.Handle(type, data);
         }
     }
 }

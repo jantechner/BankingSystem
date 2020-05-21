@@ -16,7 +16,9 @@ namespace BankingSystem
             InterBankPaymentManager.RegisterBank(millenium);
 
             var entryPoint = new EntryPoint();
-            entryPoint.SetNext(new DepositMoneyHandler()).SetNext(new WithdrawMoneyHandler());
+            entryPoint
+                .SetNext(new DepositMoneyHandler())
+                .SetNext(new WithdrawMoneyHandler());
 
             var customer1 = new Customer("87040500342") {Name = "Jan", Surname = "Kowalski"};
             var customer2 = new Customer("97021500531") {Name = "Grzegorz", Surname = "Nowak"};
@@ -38,7 +40,7 @@ namespace BankingSystem
             entryPoint.Handle("withdraw money",
                 new Dictionary<string, object> {{"account", account1}, {"amount", 600.0}});
 
-
+            // customer1.DepositMoney(account1, 400);
              entryPoint.Handle("deposit money",
                 new Dictionary<string, object> {{"account", account1}, {"amount", 400.0}});
 

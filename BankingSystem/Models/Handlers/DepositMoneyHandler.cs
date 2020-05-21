@@ -5,17 +5,13 @@ namespace Models.Handlers
 {
     public class DepositMoneyHandler : BaseHandler
     {
-        public override void Handle(string requestType, Dictionary<string, object> data)
+        public override bool Handle(RequestType type, Dictionary<string, object> data)
         {
-            if (requestType != "deposit money")
-            {
-                base.Handle(requestType, data);
-                return;
-            }
+            if (type != RequestType.DepositMoney) return base.Handle(type, data);
             if (!data.ContainsKey("account") || !data.ContainsKey("amount")) throw new ArgumentException();
             var account = (Account) data["account"];
             var amount = (double) data["amount"];
-            account.Bank.Execute(new IncreaseBalance(account, amount));
+            return account.Bank.Execute(new IncreaseBalance(account, amount));
         }
     }
 }
