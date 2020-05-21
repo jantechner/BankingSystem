@@ -20,7 +20,7 @@ namespace Models
         public void Open<T>(Bank bank) where T : Account
         {
             bank.Execute(new OpenAccount<T>(this, bank));
-            Banks.Add(bank);
+            if (!Banks.Contains(bank)) Banks.Add(bank);
         }
 
         public List<T> Get<T>() where T : BankingProduct

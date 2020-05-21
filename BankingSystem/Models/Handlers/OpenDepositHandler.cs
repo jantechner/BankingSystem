@@ -1,24 +1,23 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Models.Handlers
 {
-    public class WithdrawMoneyHandler : BaseHandler
+    public class OpenDepositHandler : BaseHandler
     {
-        public WithdrawMoneyHandler()
+        public OpenDepositHandler()
         {
             _requiredParams = new List<string> {"account", "amount"};
         }
 
         public override bool Handle(RequestType type, Dictionary<string, object> data)
         {
-            if (type != RequestType.WithdrawMoney) return base.Handle(type, data);
+            if (type != RequestType.OpenDeposit) return base.Handle(type, data);
             ValidateRequest(data);
 
             var account = (Account) data["account"];
             var amount = (double) data["amount"];
-            return account.Bank.Execute(new DecreaseBalance(account, amount));
+            var interestRate = new InterestRate(0.2, 24, 6);
+            return account.Bank.Execute(new OpenDeposit(account, amount, interestRate));
         }
     }
 }

@@ -4,21 +4,23 @@ using System.Linq;
 
 namespace Models.Handlers
 {
-    public class WithdrawMoneyHandler : BaseHandler
+    public class TransferHandler : BaseHandler
     {
-        public WithdrawMoneyHandler()
+        public TransferHandler()
         {
-            _requiredParams = new List<string> {"account", "amount"};
+            _requiredParams = new List<string> {"account", "to", "amount"};
         }
 
         public override bool Handle(RequestType type, Dictionary<string, object> data)
         {
-            if (type != RequestType.WithdrawMoney) return base.Handle(type, data);
+            if (type != RequestType.Transfer) return base.Handle(type, data);
             ValidateRequest(data);
 
             var account = (Account) data["account"];
+            var to = (string) data["to"];
             var amount = (double) data["amount"];
-            return account.Bank.Execute(new DecreaseBalance(account, amount));
+
+            return account.Bank.Execute(new OutgoingTransfer(account, to, amount));
         }
     }
 }

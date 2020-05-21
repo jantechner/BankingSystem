@@ -3,6 +3,11 @@ namespace Models.Handlers
     public enum RequestType
     {
         DepositMoney,
-        WithdrawMoney
+        WithdrawMoney,
+        Transfer,
+        RequestLoan,
+        RepayLoan,
+        OpenDeposit,
+        CloseDeposit,
     }
 }

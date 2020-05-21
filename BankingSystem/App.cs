@@ -16,9 +16,6 @@ namespace BankingSystem
             InterBankPaymentManager.RegisterBank(millenium);
 
             var entryPoint = new EntryPoint();
-            entryPoint
-                .SetNext(new DepositMoneyHandler())
-                .SetNext(new WithdrawMoneyHandler());
 
             var customer1 = new Customer("87040500342") {Name = "Jan", Surname = "Kowalski"};
             var customer2 = new Customer("97021500531") {Name = "Grzegorz", Surname = "Nowak"};
@@ -29,28 +26,39 @@ namespace BankingSystem
             var account2 = customer2.Get<Account>()[0];
 
             // customer1.DepositMoney(account1, 1000);
-            entryPoint.Handle("deposit money",
+            entryPoint.Handle(RequestType.DepositMoney,
                 new Dictionary<string, object> {{"account", account1}, {"amount", 1000.0}});
 
             // customer1.WithdrawMoney(account1, 500);
-            entryPoint.Handle("withdraw money",
+            entryPoint.Handle(RequestType.WithdrawMoney,
                 new Dictionary<string, object> {{"account", account1}, {"amount", 500.0}});
 
             // customer1.WithdrawMoney(account1, 600);
-            entryPoint.Handle("withdraw money",
+            entryPoint.Handle(RequestType.WithdrawMoney,
                 new Dictionary<string, object> {{"account", account1}, {"amount", 600.0}});
 
             // customer1.DepositMoney(account1, 400);
-             entryPoint.Handle("deposit money",
+            entryPoint.Handle(RequestType.DepositMoney,
                 new Dictionary<string, object> {{"account", account1}, {"amount", 400.0}});
 
-            customer1.RequestLoan(account1, 10000, globalBank);
-            customer1.RepayLoan(account1, account1.Loans[0], 100, globalBank);
+            // customer1.RequestLoan(account1, 10000, globalBank);
+            entryPoint.Handle(RequestType.RequestLoan,
+                new Dictionary<string, object> {{"account", account1}, {"amount", 10000.0}});
 
-            customer1.OpenDeposit(account1, 5000);
-            customer1.CloseDeposit(account1.Deposits[0]);
+            // customer1.RepayLoan(account1, account1.Loans[0], 100, globalBank);
+            entryPoint.Handle(RequestType.RepayLoan,
+                new Dictionary<string, object> {{"loan", account1.Loans[0]}, {"amount", 100.0}});
+            
+            // customer1.OpenDeposit(account1, 5000);
+            entryPoint.Handle(RequestType.OpenDeposit,
+                new Dictionary<string, object> {{"account", account1}, {"amount", 5000.0}});
+            // customer1.CloseDeposit(account1.Deposits[0]);
+            entryPoint.Handle(RequestType.CloseDeposit,
+                new Dictionary<string, object> {{"deposit", account1.Deposits[0]}});
 
-            globalBank.Execute(new OutgoingTransfer(account1, "97021500531", 200));
+            entryPoint.Handle(RequestType.Transfer,
+                new Dictionary<string, object> {{"account", account1}, {"to", "97021500531"}, {"amount", 200.0}});
+            // globalBank.Execute(new OutgoingTransfer(account1, "97021500531", 200));
             // account1.OutgoingTransfer("97021500531", 200);
 
             InterBankPaymentManager.ExecuteTransfers();
