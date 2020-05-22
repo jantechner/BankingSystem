@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Models;
+using Models.Handlers;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,28 +20,30 @@ namespace BankingSystem.Tests
         public void InterestRate_AccountCalculateDefaultRate()
         {
             var bank = new Bank("testBank", "", "");
-            var customer = new Customer("");
+            var customer = new Customer("", new EntryPoint());
             customer.Open<RegularAccount>(bank);
-            var accout = customer.Get<Account>()[0];
-            customer.DepositMoney(accout, 1000);
-            bank.Execute((new CalculateInterest(accout)));
+            var account = customer.Get<Account>()[0];
+            customer.Request(RequestType.DepositMoney,
+                new Dictionary<string, object> {{"account", account}, {"amount", 1000.0}});
+            bank.Execute((new CalculateInterest(account)));
             // Leaving this in here in case somebody needs a proper way to debug tests :D 
             // _output.WriteLine($"accout.Balance: {accout.Balance}"); 
-            Assert.Equal(1050, accout.Balance);
+            Assert.Equal(1050, account.Balance);
         }
 
         [Fact]
         public void InterestRate_AccountCalculateCustomRate()
         {
             var bank = new Bank("testBank", "", "");
-            var customer = new Customer("");
+            var customer = new Customer("", new EntryPoint());
             customer.Open<RegularAccount>(bank);
-            var accout = customer.Get<Account>()[0];
-            customer.DepositMoney(accout, 1000);
-            bank.Execute(new ChangeInterestRate(accout, new AnotherInterestRate(0.02)));
-            bank.Execute((new CalculateInterest(accout)));
-            _output.WriteLine($"accout.Balance: {accout.Balance}");
-            Assert.Equal(1020, accout.Balance);
+            var account = customer.Get<Account>()[0];
+            customer.Request(RequestType.DepositMoney,
+                new Dictionary<string, object> {{"account", account}, {"amount", 1000.0}});
+            bank.Execute(new ChangeInterestRate(account, new AnotherInterestRate(0.02)));
+            bank.Execute((new CalculateInterest(account)));
+            _output.WriteLine($"accout.Balance: {account.Balance}");
+            Assert.Equal(1020, account.Balance);
         }
 
         [Fact]
@@ -48,58 +52,62 @@ namespace BankingSystem.Tests
             // Simplified compound interest calculation
             // 10 periods with capitalization on the end of each period
             var bank = new Bank("testBank", "", "");
-            var customer = new Customer("");
+            var customer = new Customer("", new EntryPoint());
             customer.Open<RegularAccount>(bank);
-            var accout = customer.Get<Account>()[0];
-            customer.DepositMoney(accout, 1000);
-            bank.Execute(new ChangeInterestRate(accout, new AnotherInterestRate(0.02)));
+            var account = customer.Get<Account>()[0];
+            customer.Request(RequestType.DepositMoney,
+                new Dictionary<string, object> {{"account", account}, {"amount", 1000.0}});
+            bank.Execute(new ChangeInterestRate(account, new AnotherInterestRate(0.02)));
             for (var i = 0; i < 10; i++)
             {
-                bank.Execute((new CalculateInterest(accout)));
+                bank.Execute((new CalculateInterest(account)));
             }
-            Assert.Equal(Math.Round(1000 * Math.Pow(1.02, 10), 10), Math.Round((accout.Balance), 10));
+            Assert.Equal(Math.Round(1000 * Math.Pow(1.02, 10), 10), Math.Round((account.Balance), 10));
         }
         
         [Fact]
         public void InterestRate_DebitCalculateDefaultRate()
         {
             var bank = new Bank("testBank", "", "");
-            var customer = new Customer("");
+            var customer = new Customer("", new EntryPoint());
             customer.Open<DebitAccount>(bank);
-            var accout = customer.Get<Account>()[0];
-            customer.DepositMoney(accout, 1000);
-            bank.Execute((new CalculateInterest(accout)));
-            Assert.Equal(1050, accout.Balance);
+            var account = customer.Get<Account>()[0];
+            customer.Request(RequestType.DepositMoney,
+                new Dictionary<string, object> {{"account", account}, {"amount", 1000.0}});
+            bank.Execute((new CalculateInterest(account)));
+            Assert.Equal(1050, account.Balance);
         }
 
         [Fact]
         public void InterestRate_DebitCalculateCustomRate()
         {
             var bank = new Bank("testBank", "", "");
-            var customer = new Customer("");
+            var customer = new Customer("", new EntryPoint());
             customer.Open<DebitAccount>(bank);
-            var accout = customer.Get<Account>()[0];
-            customer.DepositMoney(accout, 1000);
-            bank.Execute(new ChangeInterestRate(accout, new AnotherInterestRate(0.02)));
-            bank.Execute((new CalculateInterest(accout)));
-            _output.WriteLine($"accout.Balance: {accout.Balance}");
-            Assert.Equal(1020, accout.Balance);
+            var account = customer.Get<Account>()[0];
+            customer.Request(RequestType.DepositMoney,
+                new Dictionary<string, object> {{"account", account}, {"amount", 1000.0}});
+            bank.Execute(new ChangeInterestRate(account, new AnotherInterestRate(0.02)));
+            bank.Execute((new CalculateInterest(account)));
+            _output.WriteLine($"accout.Balance: {account.Balance}");
+            Assert.Equal(1020, account.Balance);
         }
 
         [Fact]
         public void InterestRate_DebitCalculateCompoundInterest()
         {
             var bank = new Bank("testBank", "", "");
-            var customer = new Customer("");
+            var customer = new Customer("", new EntryPoint());
             customer.Open<DebitAccount>(bank);
-            var accout = customer.Get<Account>()[0];
-            customer.DepositMoney(accout, 1000);
-            bank.Execute(new ChangeInterestRate(accout, new AnotherInterestRate(0.02)));
+            var account = customer.Get<Account>()[0];
+            customer.Request(RequestType.DepositMoney,
+                new Dictionary<string, object> {{"account", account}, {"amount", 1000.0}});
+            bank.Execute(new ChangeInterestRate(account, new AnotherInterestRate(0.02)));
             for (var i = 0; i < 10; i++)
             {
-                bank.Execute((new CalculateInterest(accout)));
+                bank.Execute((new CalculateInterest(account)));
             }
-            Assert.Equal(Math.Round(1000 * Math.Pow(1.02, 10), 10), Math.Round((accout.Balance), 10));
+            Assert.Equal(Math.Round(1000 * Math.Pow(1.02, 10), 10), Math.Round((account.Balance), 10));
         }
     }
 }

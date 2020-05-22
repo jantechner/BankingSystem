@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Models.Handlers;
 
 namespace Models
 {
@@ -11,10 +12,12 @@ namespace Models
         public string Surname { get; set; }
         public string Pesel { get; }
         public IList<Bank> Banks { get; } = new List<Bank>();
+        public EntryPoint EntryPoint { private get; set; }
 
-        public Customer(string pesel)
+        public Customer(string pesel, EntryPoint ep)
         {
             Pesel = pesel;
+            EntryPoint = ep;
         }
 
         public void Open<T>(Bank bank) where T : Account
@@ -27,38 +30,43 @@ namespace Models
         {
             return Banks.SelectMany(bank => bank.GetCustomerProducts<T>(this)).ToList();
         }
-
-        public void WithdrawMoney(Account account, double amount)
+        
+        public bool Request(RequestType type, Dictionary<string, object> data)
         {
-            account.Bank.Execute(new DecreaseBalance(account, amount));
+            return EntryPoint.Handle(type, data);
         }
 
-        public void DepositMoney(Account account, double amount)
-        {
-            account.Bank.Execute(new IncreaseBalance(account, amount));
-        }
-
-        public bool RequestLoan(Account account, double amount, Bank bank)
-        {
-            return Banks.Contains(bank) && bank.Execute(new RaiseLoan(account, amount, new InterestRate(0.2, 24, 6)));
-        }
-
-        public bool RepayLoan(Account account, Loan loan, int amount, Bank bank)
-        {
-            return Banks.Contains(bank) && bank.Execute(new RepayLoan(loan, amount));
-        }
-
-        public bool OpenDeposit(Account account, double amount)
-        {
-            return Banks.Contains(account.Bank) &&
-                   account.Bank.Execute(new OpenDeposit(account, amount, new InterestRate(0.2, 24, 6)));
-        }
-
-        public bool CloseDeposit(Deposit deposit)
-        {
-            return Banks.Contains(deposit.Account.Bank) &&
-                   deposit.Account.Bank.Execute(new CloseDeposit(deposit));
-        }
+        // public void WithdrawMoney(Account account, double amount)
+        // {
+        //     account.Bank.Execute(new DecreaseBalance(account, amount));
+        // }
+        //
+        // public void DepositMoney(Account account, double amount)
+        // {
+        //     account.Bank.Execute(new IncreaseBalance(account, amount));
+        // }
+        //
+        // public bool RequestLoan(Account account, double amount, Bank bank)
+        // {
+        //     return Banks.Contains(bank) && bank.Execute(new RaiseLoan(account, amount, new InterestRate(0.2, 24, 6)));
+        // }
+        //
+        // public bool RepayLoan(Account account, Loan loan, int amount, Bank bank)
+        // {
+        //     return Banks.Contains(bank) && bank.Execute(new RepayLoan(loan, amount));
+        // }
+        //
+        // public bool OpenDeposit(Account account, double amount)
+        // {
+        //     return Banks.Contains(account.Bank) &&
+        //            account.Bank.Execute(new OpenDeposit(account, amount, new InterestRate(0.2, 24, 6)));
+        // }
+        //
+        // public bool CloseDeposit(Deposit deposit)
+        // {
+        //     return Banks.Contains(deposit.Account.Bank) &&
+        //            deposit.Account.Bank.Execute(new CloseDeposit(deposit));
+        // }
 
         public override string ToString()
         {

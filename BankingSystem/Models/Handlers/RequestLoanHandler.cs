@@ -19,6 +19,7 @@ namespace Models.Handlers
             var account = (Account) data["account"];
             var amount = (double) data["amount"];
             var interestRate = new InterestRate(0.2, 24, 6);
+            if (account.Bank == null) throw new NullReferenceException("Account must be assigned to bank");
             return account.Bank.Execute(new RaiseLoan(account, amount, interestRate));
         }
     }

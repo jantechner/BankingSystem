@@ -17,8 +17,8 @@ namespace BankingSystem
 
             var entryPoint = new EntryPoint();
 
-            var customer1 = new Customer("87040500342") {Name = "Jan", Surname = "Kowalski"};
-            var customer2 = new Customer("97021500531") {Name = "Grzegorz", Surname = "Nowak"};
+            var customer1 = new Customer("87040500342", entryPoint) {Name = "Jan", Surname = "Kowalski"};
+            var customer2 = new Customer("97021500531", entryPoint) {Name = "Grzegorz", Surname = "Nowak"};
 
             customer1.Open<DebitAccount>(globalBank);
             customer2.Open<RegularAccount>(millenium);
@@ -26,37 +26,37 @@ namespace BankingSystem
             var account2 = customer2.Get<Account>()[0];
 
             // customer1.DepositMoney(account1, 1000);
-            entryPoint.Handle(RequestType.DepositMoney,
+            customer1.Request(RequestType.DepositMoney,
                 new Dictionary<string, object> {{"account", account1}, {"amount", 1000.0}});
 
             // customer1.WithdrawMoney(account1, 500);
-            entryPoint.Handle(RequestType.WithdrawMoney,
+            customer1.Request(RequestType.WithdrawMoney,
                 new Dictionary<string, object> {{"account", account1}, {"amount", 500.0}});
 
             // customer1.WithdrawMoney(account1, 600);
-            entryPoint.Handle(RequestType.WithdrawMoney,
+            customer1.Request(RequestType.WithdrawMoney,
                 new Dictionary<string, object> {{"account", account1}, {"amount", 600.0}});
 
             // customer1.DepositMoney(account1, 400);
-            entryPoint.Handle(RequestType.DepositMoney,
+            customer1.Request(RequestType.DepositMoney,
                 new Dictionary<string, object> {{"account", account1}, {"amount", 400.0}});
 
             // customer1.RequestLoan(account1, 10000, globalBank);
-            entryPoint.Handle(RequestType.RequestLoan,
+            customer1.Request(RequestType.RequestLoan,
                 new Dictionary<string, object> {{"account", account1}, {"amount", 10000.0}});
 
             // customer1.RepayLoan(account1, account1.Loans[0], 100, globalBank);
-            entryPoint.Handle(RequestType.RepayLoan,
+            customer1.Request(RequestType.RepayLoan,
                 new Dictionary<string, object> {{"loan", account1.Loans[0]}, {"amount", 100.0}});
-            
+
             // customer1.OpenDeposit(account1, 5000);
-            entryPoint.Handle(RequestType.OpenDeposit,
+            customer1.Request(RequestType.OpenDeposit,
                 new Dictionary<string, object> {{"account", account1}, {"amount", 5000.0}});
             // customer1.CloseDeposit(account1.Deposits[0]);
-            entryPoint.Handle(RequestType.CloseDeposit,
+            customer1.Request(RequestType.CloseDeposit,
                 new Dictionary<string, object> {{"deposit", account1.Deposits[0]}});
 
-            entryPoint.Handle(RequestType.Transfer,
+            customer1.Request(RequestType.Transfer,
                 new Dictionary<string, object> {{"account", account1}, {"to", "97021500531"}, {"amount", 200.0}});
             // globalBank.Execute(new OutgoingTransfer(account1, "97021500531", 200));
             // account1.OutgoingTransfer("97021500531", 200);
